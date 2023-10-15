@@ -1,0 +1,46 @@
+name: "Build Gluon"
+description: "Sign Gluon images using build-gluon container"
+inputs:
+  gluon-version:
+    description: 'Gluon commit hash to build'
+    required: true
+  container-version:
+    description: 'Container version to use'
+    default: 'master'
+  output-dir:
+    description: 'Directory the images/ packages/ and debug/ subfolders of Gluon output are stored in'
+    default: "gluon-output"
+  signing-key:
+    description: 'ECDSA key to sign manifest with'
+    required: true
+  manifest-branches:
+    description: 'Space-seperated Manifest names to sign'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
+      env:
+        VERSION: ${{ inputs.container-version }}
+      shell: bash
+    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
+      shell: bash
+    - run: mkdir ${RUNNER_TEMP}/gluon-signing-key; echo "${{ inputs.signing-key }}" > "${RUNNER_TEMP}/gluon-signing-key/signing.key"
+      shell: bash
+    - run: |
+        docker run --rm \
+          --user "$(id -u):$(id -g)" \
+          --env ACTION_OUTPUT_DIR \
+          --env ACTION_SIGNING_KEY \
+          --env ACTION_MANIFEST_BRANCHES \
+          --volume "${GITHUB_WORKSPACE}/${ACTION_OUTPUT_DIR}:/gluon/output-dir" \
+          --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
+          --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
+          --volume "${RUNNER_TEMP}/gluon-signing-key:/gluon/signing-key" \
+          sdk
+      env:
+        ACTION_OUTPUT_DIR: ${{ inputs.output-dir }}
+        ACTION_SIGNING_KEY: ${{ inputs.signing-key }}
+        ACTION_MANIFEST_BRANCHES: ${{ inputs.manifest-branches }}
+      shell: bash

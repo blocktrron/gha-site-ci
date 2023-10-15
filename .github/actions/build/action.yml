@@ -1,0 +1,57 @@
+name: "Build Gluon"
+description: "Build Gluon images using build-gluon container"
+inputs:
+  gluon-version:
+    description: 'Gluon commit hash to build'
+    required: true
+  container-version:
+    description: 'Container version to use'
+    default: 'master'
+  target:
+    description: 'Target to build'
+    required: true
+  broken:
+    description: 'Determines if BROKEN devices should be built (Default: 0)'
+    default: 0
+  deprecated:
+    description: 'Determines if deprecated devices should be built (Default: 0)'
+    default: 0
+  autoupdater-enabled:
+    description: 'Autoupdater should be enabled by default (Default: 0)'
+    default: 0
+  autoupdater-branch:
+    description: 'Default branch for the Autoupdater'
+  release:
+    description: 'Version string for the release to use'
+runs:
+  using: 'composite'
+  steps:
+    - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
+      env:
+        VERSION: ${{ inputs.container-version }}
+      shell: bash
+    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout "${{ inputs.gluon-version }}"
+      shell: bash
+    - run: |
+        docker run --rm \
+          --user "$(id -u):$(id -g)" \
+          --env VERSION \
+          --env TARGET \
+          --env GLUON_ACTION_BROKEN \
+          --env GLUON_ACTION_DEPRECATED \
+          --env GLUON_ACTION_AUTOUPDATER_ENABLED \
+          --env GLUON_ACTION_AUTOUPDATER_BRANCH \
+          --env GLUON_ACTION_RELEASE \
+          --volume "${GITHUB_WORKSPACE}:/gluon/artifacts" \
+          --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
+          --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
+          sdk
+      env:
+        VERSION: ${{ inputs.gluon-version }}
+        TARGET: ${{ inputs.target }}
+        GLUON_ACTION_BROKEN: ${{ inputs.broken }}
+        GLUON_ACTION_DEPRECATED: ${{ inputs.deprecated }}
+        GLUON_ACTION_AUTOUPDATER_ENABLED: ${{ inputs.autoupdater-enabled }}
+        GLUON_ACTION_AUTOUPDATER_BRANCH: ${{ inputs.autoupdater-branch }}
+        GLUON_ACTION_RELEASE: ${{ inputs.release }}
+      shell: bash

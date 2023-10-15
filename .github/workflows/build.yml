@@ -1,0 +1,107 @@
+name: "Build Gluon images"
+on: [push]
+
+jobs:
+  build-meta:
+    outputs:
+      release-version: ${{ steps.build-metadata.outputs.release-version }}
+      autoupdater-enabled: ${{ steps.build-metadata.outputs.autoupdater-enabled }}
+      autoupdater-branch: ${{ steps.build-metadata.outputs.autoupdater-branch }}
+    runs-on: ubuntu-latest
+    name: Determine build-meta
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get build-metadata
+        id: build-metadata
+        run: bash .github/build-meta.sh
+
+  targets:
+    needs: build-meta
+    outputs:
+      targets: ${{ steps.get-targets.outputs.targets }}
+    runs-on: ubuntu-latest
+    name: Get Gluon targets
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get Targets
+        uses: ./.github/actions/get-targets
+        id: get-targets
+        with:
+          gluon-version: "master"
+          broken: "1"
+
+  build:
+    needs: [ targets, build-meta ]
+    if: ${{ needs.targets.outputs.targets != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.targets.outputs.targets) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build
+        uses: ./.github/actions/build
+        id: build--gluon
+        with:
+          gluon-version: "master"
+          target: ${{ matrix.target }}
+          broken: "1"
+          deprecated: "0"
+          autoupdater-enabled: ${{ needs.build-meta.outputs.autoupdater-enabled }}
+          autoupdater-branch: ${{ needs.build-meta.outputs.autoupdater-branch }}
+          release: ${{ needs.build-meta.outputs.release-version }}
+
+      - name: Archive build output
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.target }}
+          path: output
+
+  manifest:
+    needs: [ build, build-meta ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          path: artifact-in
+      - name: Create manifest
+        uses: ./.github/actions/manifest
+        id: manifest
+        with:
+          gluon-version: "master"
+          artifact-input: artifact-in
+          artifact-output: artifact-out
+          manifest-branches: "${{ needs.build-meta.outputs.autoupdater-branch }}" 
+          release: ${{ needs.build-meta.outputs.release-version }}
+          targets: ${{ needs.targets.outputs.targets }}
+      - name: Archive output
+        uses: actions/upload-artifact@v3
+        with:
+          name: combined-manifest
+          path: artifact-out
+
+  sign:
+    needs: [ manifest, build-meta ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: combined-manifest
+          path: artifact-in
+      - name: Sign manifest
+        uses: ./.github/actions/sign
+        id: sign
+        with:
+          gluon-version: "master"
+          output-dir: artifact-in
+          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
+          manifest-branches: "${{ needs.build-meta.outputs.autoupdater-branch }}" 
+      - name: Archive output
+        uses: actions/upload-artifact@v3
+        with:
+          name: combined-signed
+          path: artifact-in

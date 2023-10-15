@@ -1,0 +1,63 @@
+name: "Build Gluon"
+description: "Sign Gluon images using build-gluon container"
+inputs:
+  gluon-version:
+    description: 'Gluon commit hash to build'
+    required: true
+  container-version:
+    description: 'Container version to use'
+    default: 'master'
+  artifact-input:
+    description: 'Download directory for GitHub actions artifacts from Gluon build jobs'
+    default: "artifact-in"
+  artifact-output:
+    description: 'Directory to store the signed build-output in'
+    default: "artifact-out"
+  autoupdater-priority:
+    description: 'Priority for the Autoupdater'
+    default: 1
+  manifest-branches:
+    description: 'Space-seperated list for manifest branches to create'
+    required: true
+  release:
+    description: 'Version string for the release to use'
+    required: true
+  targets:
+    description: 'JSON Array containing all names of targets build-jobs were created for'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
+      env:
+        VERSION: ${{ inputs.container-version }}
+      shell: bash
+    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
+      shell: bash
+    - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.artifact-output }}"
+      shell: bash
+    - run: tree "${GITHUB_WORKSPACE}"
+      shell: bash
+    - run: |
+        docker run --rm \
+          --user "$(id -u):$(id -g)" \
+          --env VERSION \
+          --env GLUON_RELEASE \
+          --env GLUON_PRIORITY \
+          --env GLUON_MANIFEST_BRANCHES \
+          --env ACTION_TARGETS \
+          --volume "${GITHUB_WORKSPACE}/${ARTIFACT_INPUT_DIR}:/gluon/artifacts-input" \
+          --volume "${GITHUB_WORKSPACE}/${ARTIFACT_OUTPUT_DIR}:/gluon/artifacts-output" \
+          --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
+          --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
+          sdk
+      env:
+        VERSION: ${{ inputs.gluon-version }}
+        ARTIFACT_INPUT_DIR: ${{ inputs.artifact-input }}
+        ARTIFACT_OUTPUT_DIR: ${{ inputs.artifact-output }}
+        GLUON_RELEASE: ${{ inputs.release }}
+        GLUON_PRIORITY: ${{ inputs.autoupdater-priority }}
+        GLUON_MANIFEST_BRANCHES: ${{ inputs.manifest-branches }}
+        ACTION_TARGETS: ${{ inputs.targets }}
+      shell: bash
