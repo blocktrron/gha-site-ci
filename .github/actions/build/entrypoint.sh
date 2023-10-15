@@ -17,6 +17,7 @@ echo "Extra args for build: ${GLUON_MAKE_ARGS}"
 ln -s /gluon/site-repo /gluon/gluon-repo/site
 
 # Build
+cd /gluon/gluon-repo
 make update
 make "GLUON_TARGET=${TARGET}" $GLUON_MAKE_ARGS V=s "-j$(nproc)"
 echo "Build finished"
