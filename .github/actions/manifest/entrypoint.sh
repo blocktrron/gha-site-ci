@@ -25,7 +25,7 @@ done
 # Combine artifacts
 for artifact_target in $ARTIFACT_NAMES ; do
 	# Check if artifact in list. Only delete otherwise.
-	if [-n "$PARSED_TARGET_LIST" ] [[ "$PARSED_TARGET_LIST" =~ "$artifact_target" ]]; then
+	if [-n "$PARSED_TARGET_LIST" ] && [[ "$PARSED_TARGET_LIST" =~ "$artifact_target" ]]; then
 		echo "Combining ${artifact_target}"
 		# Unpack archive
 		tar xf "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/output.tar.gz" -C "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}"
