@@ -60,7 +60,7 @@ jobs:
           path: output
 
   manifest:
-    needs: [ build, build-meta ]
+    needs: [ build, build-meta, targets ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

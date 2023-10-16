@@ -7,33 +7,34 @@
 [ -n "$GLUON_PRIORITY" ] || GLUON_PRIORITY=1
 [ -n "$GLUON_MANIFEST_BRANCHES" ] || error 1
 
-ARTIFACT_TARGETS=""
-
 ln -s /gluon/site-repo /gluon/gluon-repo/site
+mkdir "$GLUON_ARTIFACT_OUTPUT_DIR/output"
+
+# Parse list of targets to build manifest for
+PARSED_TARGET_LIST=""
+[ -n "$ACTION_TARGETS" ] && PARSED_TARGET_LIST="$(echo "$ACTION_TARGETS" | jq -r '.[]' | paste -sd ' ')"
 
 # Read target names to list
+ARTIFACT_NAMES=""
 for filename in $GLUON_ARTIFACT_INPUT_DIR/*/ ; do
 	artifact_folder_name="$(basename $filename)"
 	echo "Target artifact: ${artifact_folder_name} (Full: ${filename})"
 
-	ARTIFACT_TARGETS="${ARTIFACT_TARGETS} $artifact_folder_name"
+	ARTIFACT_NAMES="${ARTIFACT_NAMES} $artifact_folder_name"
 done
 
-echo "$ARTIFACT_TARGETS"
-
-mkdir "$GLUON_ARTIFACT_OUTPUT_DIR/output"
-
 # Combine artifacts
-for artifact_target in $ARTIFACT_TARGETS ; do
-	# ToDo: Check if artifact in list. Only delete otherwise.
-	echo "Combining ${artifact_target}"
+for artifact_target in $ARTIFACT_NAMES ; do
+	# Check if artifact in list. Only delete otherwise.
+	if [-n "$PARSED_TARGET_LIST" ] [[ "$PARSED_TARGET_LIST" =~ "$artifact_target" ]]; then
+		echo "Combining ${artifact_target}"
+		# Unpack archive
+		tar xf "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/output.tar.gz" -C "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}"
+		rm "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/output.tar.gz"
 
-	# Unpack archive
-	tar xf "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/output.tar.gz" -C "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}"
-	rm "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/output.tar.gz"
-
-	# Combine targets
-	rsync -a ${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/* "$GLUON_ARTIFACT_OUTPUT_DIR/output"
+		# Combine targets
+		rsync -a ${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/* "$GLUON_ARTIFACT_OUTPUT_DIR/output"
+	fi
 	rm -rf "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}"
 done
 
