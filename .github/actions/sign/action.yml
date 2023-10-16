@@ -8,7 +8,7 @@ inputs:
     description: 'Container version to use'
     default: 'master'
   output-dir:
-    description: 'Directory the images/ packages/ and debug/ subfolders of Gluon output are stored in'
+    description: 'Directory Gluons output folder is stored in'
     default: "gluon-output"
   signing-key:
     description: 'ECDSA key to sign manifest with'

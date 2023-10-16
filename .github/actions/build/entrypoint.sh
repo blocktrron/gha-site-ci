@@ -22,5 +22,7 @@ make update
 make "GLUON_TARGET=${TARGET}" $GLUON_MAKE_ARGS V=s "-j$(nproc)"
 echo "Build finished"
 
-# Moving artifacts
-mv output /gluon/artifacts
+# Pack images
+# ToDo: Make output artifact directory configurable
+mkdir /gluon/artifacts/output
+tar czf /gluon/artifacts/output/output.tar.gz output

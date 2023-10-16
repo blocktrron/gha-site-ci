@@ -21,11 +21,19 @@ done
 
 echo "$ARTIFACT_TARGETS"
 
+mkdir "$GLUON_ARTIFACT_OUTPUT_DIR/output"
+
 # Combine artifacts
 for artifact_target in $ARTIFACT_TARGETS ; do
 	# ToDo: Check if artifact in list. Only delete otherwise.
 	echo "Combining ${artifact_target}"
-	rsync -a ${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/* "$GLUON_ARTIFACT_OUTPUT_DIR"
+
+	# Unpack archive
+	tar xf "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/output.tar.gz" -C "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}"
+	rm "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/output.tar.gz"
+
+	# Combine targets
+	rsync -a ${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/* "$GLUON_ARTIFACT_OUTPUT_DIR/output"
 	rm -rf "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}"
 done
 
@@ -39,5 +47,8 @@ for branch in $GLUON_MANIFEST_BRANCHES; do
 		"GLUON_RELEASE=$GLUON_RELEASE" \
 		"GLUON_AUTOUPDATER_BRANCH=$branch" \
 		"GLUON_PRIORITY=$GLUON_PRIORITY" \
-		"GLUON_IMAGEDIR=$GLUON_ARTIFACT_OUTPUT_DIR/images"
+		"GLUON_IMAGEDIR=$GLUON_ARTIFACT_OUTPUT_DIR/output/images"
 done
+
+# Pack output
+tar czf "$GLUON_ARTIFACT_OUTPUT_DIR/output.tar.gz" -C "$GLUON_ARTIFACT_OUTPUT_DIR" output
