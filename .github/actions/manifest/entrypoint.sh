@@ -33,6 +33,8 @@ for artifact_target in $ARTIFACT_NAMES ; do
 
 		# Combine targets
 		rsync -a ${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}/* "$GLUON_ARTIFACT_OUTPUT_DIR/output"
+	else
+		echo "Skipping ${artifact_target}"
 	fi
 	rm -rf "${GLUON_ARTIFACT_INPUT_DIR}/${artifact_target}"
 done
@@ -51,6 +53,5 @@ for branch in $GLUON_MANIFEST_BRANCHES; do
 done
 
 # Pack output
-tree $GLUON_ARTIFACT_OUTPUT_DIR
 tar czf "$GLUON_ARTIFACT_OUTPUT_DIR/output.tar.gz" -C "$GLUON_ARTIFACT_OUTPUT_DIR" output
 rm -rf "$GLUON_ARTIFACT_OUTPUT_DIR/output"
