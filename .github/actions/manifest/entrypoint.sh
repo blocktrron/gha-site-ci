@@ -11,8 +11,7 @@ ln -s /gluon/site-repo /gluon/gluon-repo/site
 mkdir "$GLUON_ARTIFACT_OUTPUT_DIR/output"
 
 # Parse list of targets to build manifest for
-PARSED_TARGET_LIST=""
-[ -n "$ACTION_TARGETS" ] && PARSED_TARGET_LIST="$(echo "$ACTION_TARGETS" | jq -r '.[]' | paste -sd ' ')"
+PARSED_TARGET_LIST="$(cat /gluon/action-data/targets.list)"
 
 # Read target names to list
 ARTIFACT_NAMES=""
@@ -52,4 +51,6 @@ for branch in $GLUON_MANIFEST_BRANCHES; do
 done
 
 # Pack output
+tree $GLUON_ARTIFACT_OUTPUT_DIR
 tar czf "$GLUON_ARTIFACT_OUTPUT_DIR/output.tar.gz" -C "$GLUON_ARTIFACT_OUTPUT_DIR" output
+rm -rf "$GLUON_ARTIFACT_OUTPUT_DIR/output"

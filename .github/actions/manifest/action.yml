@@ -39,6 +39,12 @@ runs:
       shell: bash
     - run: tree "${GITHUB_WORKSPACE}"
       shell: bash
+    - run: mkdir ${RUNNER_TEMP}/action-data
+      shell: bash
+    - run: bash $GITHUB_ACTION_PATH/target-list.sh
+      shell: bash
+      env:
+        ACTION_TARGETS: ${{ inputs.targets }}
     - run: |
         docker run --rm \
           --user "$(id -u):$(id -g)" \
@@ -51,6 +57,7 @@ runs:
           --volume "${GITHUB_WORKSPACE}/${ARTIFACT_OUTPUT_DIR}:/gluon/artifacts-output" \
           --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
           --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
+          --volume "${RUNNER_TEMP}/action-data:/gluon/action-data" \
           sdk
       env:
         VERSION: ${{ inputs.gluon-version }}
@@ -59,5 +66,4 @@ runs:
         GLUON_RELEASE: ${{ inputs.release }}
         GLUON_PRIORITY: ${{ inputs.autoupdater-priority }}
         GLUON_MANIFEST_BRANCHES: ${{ inputs.manifest-branches }}
-        ACTION_TARGETS: ${{ inputs.targets }}
       shell: bash
