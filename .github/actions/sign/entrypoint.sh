@@ -19,3 +19,4 @@ for manifest in $ACTION_MANIFEST_BRANCHES; do
 done
 
 tar czf /gluon/output-dir/output.tar.gz -C /gluon/output-dir output
+rm -rf /gluon/output-dir/output
