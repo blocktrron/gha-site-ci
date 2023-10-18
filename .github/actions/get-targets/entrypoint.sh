@@ -9,4 +9,4 @@ OUTPUT_FILE="$2"
 ln -s $GLUON_PATH/docs/site-example $GLUON_PATH/site
 
 # Get Target list
-make -C $GLUON_PATH list-targets "BROKEN=${BROKEN}" | jq  --raw-input .  | jq --slurp . | jq -c .
+make --no-print-directory -C $GLUON_PATH list-targets "BROKEN=${BROKEN}" | jq  --raw-input .  | jq --slurp . | jq -c .
