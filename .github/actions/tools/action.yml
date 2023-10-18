@@ -7,20 +7,32 @@ inputs:
   container-version:
     description: 'Container version to use'
     default: 'master'
-  artifacts:
-    description: 'Download directory for GitHub actions artifacts from Gluon build jobs'
-    default: "artifacts"
+  use-cache:
+    description: 'Restore and save generated host-tools to GitHub actions cache'
+    default: true
+  store-artifacts:
+    description: 'Store resulting host-tools as artifact to use for consecutive steps'
+    default: true
 
 runs:
   using: 'composite'
   steps:
+    - name: Cache Tools
+      id: cache-tools
+      uses: actions/cache@v3
+      with:
+        path: cache/tools
+        key: ${{ inputs.gluon-version }}-tools
     - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
+      if: steps.cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.container-version }}
       shell: bash
     - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
+      if: steps.cache-tools.outputs.cache-hit != 'true'
       shell: bash
     - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.artifacts }}"
+      if: steps.cache-tools.outputs.cache-hit != 'true'
       shell: bash
     - run: tree "${GITHUB_WORKSPACE}"
       shell: bash
@@ -28,12 +40,17 @@ runs:
         docker run --rm \
           --user "$(id -u):$(id -g)" \
           --env VERSION \
-          --env GLUON_RELEASE \
           --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
-          --volume "${GITHUB_WORKSPACE}/${ARTIFACT_DIR}:/gluon/artifacts" \
+          --volume "${GITHUB_WORKSPACE}/cache/tools:/gluon/artifacts" \
           --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
           sdk
+      if: steps.cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.gluon-version }}
-        ARTIFACT_DIR: ${{ inputs.artifacts }}
       shell: bash
+    - name: Archive output
+      uses: actions/upload-artifact@v3
+      with:
+        name: host-tools
+        path: cache/tools
+
