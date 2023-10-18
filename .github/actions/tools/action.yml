@@ -1,8 +1,11 @@
 name: "Build OpenWrt host-tools"
 description: "Build reusable OpenWrt host-tools for use with Gluon"
 inputs:
-  gluon-version:
-    description: 'Gluon commit hash to build'
+  gluon-path:
+    description: 'Path to Gluon repository'
+    required: true
+  output-path:
+    description: 'Output path where host-tools should be stored'
     required: true
   container-version:
     description: 'Container version to use'
@@ -10,22 +13,13 @@ inputs:
   use-cache:
     description: 'Restore and save generated host-tools to GitHub actions cache'
     default: true
-  store-artifacts:
-    description: 'Store resulting host-tools as artifact to use for consecutive steps'
-    default: true
-  artifact-name:
-    description: 'Name of the resulting artifact'
-    default: 'openwrt-host-tools'
 
 runs:
   using: 'composite'
   steps:
-    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
-      if: steps.cache-tools.outputs.cache-hit != 'true'
-      shell: bash
     - name: Determine Cache-Key
       id: cache-key
-      run: echo "cache-key=$(bash $GITHUB_ACTION_PATH/cache-key.sh ${RUNNER_TEMP}/gluon)" >> "$GITHUB_OUTPUT"
+      run: echo "cache-key=$(bash $GITHUB_ACTION_PATH/cache-key.sh ${GITHUB_WORKSPACE}/${{ inputs.gluon-path }})" >> "$GITHUB_OUTPUT"
       shell: bash
     - name: Print Cache-Key
       run: echo ${{ steps.cache-key.outputs.cache-key }}
@@ -35,14 +29,14 @@ runs:
       if: inputs.use-cache == 'true'
       uses: actions/cache@v3
       with:
-        path: cache/tools
+        path: ${{ inputs.output-path }}
         key: ${{ steps.cache-key.outputs.cache-key }}-tools
     - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
       if: steps.cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.container-version }}
       shell: bash
-    - run: mkdir -p "${GITHUB_WORKSPACE}/cache/tools"
+    - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.output-path }}"
       if: steps.cache-tools.outputs.cache-hit != 'true'
       shell: bash
     - run: tree "${GITHUB_WORKSPACE}"
@@ -52,17 +46,13 @@ runs:
           --user "$(id -u):$(id -g)" \
           --env VERSION \
           --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
-          --volume "${GITHUB_WORKSPACE}/cache/tools:/gluon/artifacts" \
-          --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
+          --volume "${GITHUB_WORKSPACE}/$ACTION_OUTPUT_PATH:/gluon/artifacts" \
+          --volume "${GITHUB_WORKSPACE}/${{ inputs.gluon-path }}:/gluon/gluon-repo" \
           sdk
       if: steps.cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.gluon-version }}
+        ACTION_OUTPUT_PATH: ${{ inputs.output-path }}
       shell: bash
-    - name: Archive output
-      uses: actions/upload-artifact@v3
-      if: inputs.store-artifacts == 'true'
-      with:
-        name: ${{ inputs.artifact-name }}
-        path: cache/tools
+
 

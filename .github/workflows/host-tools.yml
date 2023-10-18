@@ -24,9 +24,19 @@ jobs:
     name: Build host-tools
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        repository: 'https://github.com/freifunk-gluon/gluon.git'
+        ref: 'master'
+        path: 'gluon-gha-data/gluon'
       - name: Build host-tools
         uses: ./.github/actions/tools
         id: build-host-tools
         with:
-          gluon-version: "master"
+          gluon-path: "gluon-gha-data/gluon"
+          output-path: "gluon-gha-data/host-tools"
+      - name: Archive build output
+        uses: actions/upload-artifact@v3
+        with:
+          name: host-tools
+          path: "gluon-gha-data/host-tools"
 
