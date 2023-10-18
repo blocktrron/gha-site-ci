@@ -15,16 +15,6 @@ make -C "$GLUON_REPO" update
 # Compile Lua
 make -C "$GLUON_REPO" "-j$(nproc)" V=s "openwrt/staging_dir/hostpkg/bin/lua"
 
-for branch in $GLUON_MANIFEST_BRANCHES; do
-	make -C "$GLUON_REPO" manifest \
-		"-j$(nproc)" \
-		"V=s" \
-		"BROKEN=1" \
-		"GLUON_RELEASE=$GLUON_RELEASE" \
-		"GLUON_AUTOUPDATER_BRANCH=$branch" \
-		"GLUON_PRIORITY=$GLUON_PRIORITY" \
-		"GLUON_IMAGEDIR=$GLUON_ARTIFACT_DIR/output/images"
-done
-
 # Pack output
 tar cJf "$GLUON_ARTIFACT_DIR/openwrt-host-tools.tar.xz" -C "$OPENWRT_STAGING_DIR" host
+tar cJf "$GLUON_ARTIFACT_DIR/openwrt-build-dir.tar.xz" -C "$OPENWRT_DIR" build_dir
