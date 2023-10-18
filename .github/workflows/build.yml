@@ -69,14 +69,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
-          path: artifact-in
+          path: artifacts
       - name: Create manifest
         uses: ./.github/actions/manifest
         id: manifest
         with:
           gluon-version: "master"
-          artifact-input: artifact-in
-          artifact-output: artifact-out
+          artifacts: artifacts
           manifest-branches: "${{ needs.build-meta.outputs.manifest-branches }}" 
           release: ${{ needs.build-meta.outputs.release-version }}
           targets: ${{ needs.targets.outputs.targets }}
@@ -84,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: combined-manifest
-          path: artifact-out
+          path: artifacts
 
   sign:
     needs: [ manifest, build-meta ]

@@ -7,12 +7,9 @@ inputs:
   container-version:
     description: 'Container version to use'
     default: 'master'
-  artifact-input:
+  artifacts:
     description: 'Download directory for GitHub actions artifacts from Gluon build jobs'
-    default: "artifact-in"
-  artifact-output:
-    description: 'Directory to store the signed build-output in'
-    default: "artifact-out"
+    default: "artifacts"
   autoupdater-priority:
     description: 'Priority for the Autoupdater'
     default: 1
@@ -35,7 +32,7 @@ runs:
       shell: bash
     - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
       shell: bash
-    - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.artifact-output }}"
+    - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.artifacts }}"
       shell: bash
     - run: tree "${GITHUB_WORKSPACE}"
       shell: bash
@@ -53,16 +50,14 @@ runs:
           --env GLUON_PRIORITY \
           --env GLUON_MANIFEST_BRANCHES \
           --env ACTION_TARGETS \
-          --volume "${GITHUB_WORKSPACE}/${ARTIFACT_INPUT_DIR}:/gluon/artifacts-input" \
-          --volume "${GITHUB_WORKSPACE}/${ARTIFACT_OUTPUT_DIR}:/gluon/artifacts-output" \
+          --volume "${GITHUB_WORKSPACE}/${ARTIFACT_DIR}:/gluon/artifacts" \
           --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
           --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
           --volume "${RUNNER_TEMP}/action-data:/gluon/action-data" \
           sdk
       env:
         VERSION: ${{ inputs.gluon-version }}
-        ARTIFACT_INPUT_DIR: ${{ inputs.artifact-input }}
-        ARTIFACT_OUTPUT_DIR: ${{ inputs.artifact-output }}
+        ARTIFACT_DIR: ${{ inputs.artifacts }}
         GLUON_RELEASE: ${{ inputs.release }}
         GLUON_PRIORITY: ${{ inputs.autoupdater-priority }}
         GLUON_MANIFEST_BRANCHES: ${{ inputs.manifest-branches }}
