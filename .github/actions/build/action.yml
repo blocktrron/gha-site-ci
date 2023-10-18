@@ -15,7 +15,7 @@ inputs:
     required: true
   make-target:
     description: 'Make target to use'
-    default: ''
+    default: 'all'
   broken:
     description: 'Determines if BROKEN devices should be built (Default: 0)'
     default: 0
@@ -39,7 +39,7 @@ runs:
     - run: |
         docker run --rm \
           --user "$(id -u):$(id -g)" \
-          --env TARGET \
+          --env ACTION_HARDWARE_TARGET \
           --env ACTION_MAKE_TARGET \
           --env ACTION_ARTIFACT_DIR \
           --env GLUON_ACTION_BROKEN \
@@ -51,7 +51,7 @@ runs:
           --volume "${GITHUB_WORKSPACE}/${ACTION_GLUON_PATH}:/gluon/gluon-repo" \
           sdk
       env:
-        TARGET: ${{ inputs.hardware-target }}
+        ACTION_HARDWARE_TARGET: ${{ inputs.hardware-target }}
         ACTION_MAKE_TARGET: ${{ inputs.make-target }}
         ACTION_ARTIFACT_DIR: ${{ inputs.artifact-dir }}
         ACTION_GLUON_PATH: ${{ inputs.gluon-path }}
