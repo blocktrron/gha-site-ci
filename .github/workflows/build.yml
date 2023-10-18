@@ -92,7 +92,7 @@ jobs:
           path: "gluon-gha-data/host-tools"
       
       - name: Restore host-tools
-        run: tar xf gluon-gha-data/host-tools/host-tools.tar.xz -C gluon-gha-data/gluon/openwrt/staging_dir; tree gluon-gha-data/gluon/openwrt
+        run: tar xf gluon-gha-data/host-tools/openwrt-host-tools.tar.xz -C gluon-gha-data/gluon/openwrt/staging_dir; tree gluon-gha-data/gluon/openwrt
 
       - name: Build
         uses: ./.github/actions/build
