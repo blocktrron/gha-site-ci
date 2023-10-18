@@ -29,9 +29,8 @@ jobs:
         id: build-host-tools
         with:
           gluon-version: "master"
-          artifacts: "artifacts"
       - name: Archive output
         uses: actions/upload-artifact@v3
         with:
-          name: host-tools
-          path: artifacts
+          name: host-tools-workflow
+          path: cache/tools
