@@ -1,0 +1,37 @@
+name: "Build Host tools"
+on: [push]
+
+jobs:
+  build-meta:
+    outputs:
+      release-version: ${{ steps.build-metadata.outputs.release-version }}
+      autoupdater-enabled: ${{ steps.build-metadata.outputs.autoupdater-enabled }}
+      autoupdater-branch: ${{ steps.build-metadata.outputs.autoupdater-branch }}
+      manifest-branches: ${{ steps.build-metadata.outputs.manifest-branches }}
+    runs-on: ubuntu-latest
+    name: Determine build-meta
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get build-metadata
+        id: build-metadata
+        run: bash .github/build-meta.sh
+      - name: Print build-metadata
+        run: cat $GITHUB_OUTPUT
+
+  host-tools:
+    needs: build-meta
+    runs-on: ubuntu-latest
+    name: Build host-tools
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build host-tools
+        uses: ./.github/actions/tools
+        id: build-host-tools
+        with:
+          gluon-version: "master"
+          artifacts: "artifacts"
+      - name: Archive output
+        uses: actions/upload-artifact@v3
+        with:
+          name: host-tools
+          path: artifacts
