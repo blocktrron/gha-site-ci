@@ -17,21 +17,28 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
+      if: steps.cache-tools.outputs.cache-hit != 'true'
+      shell: bash
+    - name: Determine Cache-Key
+      id: cache-key
+      run: echo "cache-key=$(bash $GITHUB_ACTION_PATH/cache-key.sh ${RUNNER_TEMP}/gluon)" >> "$GITHUB_OUTPUT"
+      shell: bash
+    - name: Print Cache-Key
+      run: echo ${{ steps.cache-key.outputs.cache-key }}
+      shell: bash
     - name: Cache Tools
       id: cache-tools
       uses: actions/cache@v3
       with:
         path: cache/tools
-        key: ${{ inputs.gluon-version }}-tools
+        key: ${{ steps.cache-key.outputs.cache-key }}-tools
     - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
       if: steps.cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.container-version }}
       shell: bash
-    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
-      if: steps.cache-tools.outputs.cache-hit != 'true'
-      shell: bash
-    - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.artifacts }}"
+    - run: mkdir -p "${GITHUB_WORKSPACE}/cache/tools"
       if: steps.cache-tools.outputs.cache-hit != 'true'
       shell: bash
     - run: tree "${GITHUB_WORKSPACE}"
