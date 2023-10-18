@@ -21,9 +21,6 @@ runs:
       id: cache-key
       run: echo "cache-key=$(bash $GITHUB_ACTION_PATH/cache-key.sh ${GITHUB_WORKSPACE}/${{ inputs.gluon-path }})" >> "$GITHUB_OUTPUT"
       shell: bash
-    - name: Print Cache-Key
-      run: echo ${{ steps.cache-key.outputs.cache-key }}
-      shell: bash
     - name: Cache Tools
       id: cache-tools
       if: inputs.use-cache == 'true'
@@ -38,8 +35,6 @@ runs:
       shell: bash
     - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.output-path }}"
       if: steps.cache-tools.outputs.cache-hit != 'true'
-      shell: bash
-    - run: tree "${GITHUB_WORKSPACE}"
       shell: bash
     - run: |
         docker run --rm \
