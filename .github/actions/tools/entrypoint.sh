@@ -27,4 +27,4 @@ for branch in $GLUON_MANIFEST_BRANCHES; do
 done
 
 # Pack output
-tar cJf "$GLUON_ARTIFACT_DIR/openwrt-host-tools.tar.gz" -C "$OPENWRT_STAGING_DIR" host
+tar cJf "$GLUON_ARTIFACT_DIR/openwrt-host-tools.tar.xz" -C "$OPENWRT_STAGING_DIR" host
