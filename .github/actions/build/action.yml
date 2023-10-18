@@ -1,15 +1,21 @@
 name: "Build Gluon"
 description: "Build Gluon images using build-gluon container"
 inputs:
-  gluon-version:
-    description: 'Gluon commit hash to build'
-    required: true
   container-version:
     description: 'Container version to use'
     default: 'master'
-  target:
+  gluon-path:
+    description: 'Path to Gluon repository'
+    required: true
+  site-path:
+    description: 'Path to Gluon site-directory'
+    default: ''
+  hardware-target:
     description: 'Target to build'
     required: true
+  make-target:
+    description: 'Make target to use'
+    default: ''
   broken:
     description: 'Determines if BROKEN devices should be built (Default: 0)'
     default: 0
@@ -30,25 +36,26 @@ runs:
       env:
         VERSION: ${{ inputs.container-version }}
       shell: bash
-    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout "${{ inputs.gluon-version }}"
-      shell: bash
     - run: |
         docker run --rm \
           --user "$(id -u):$(id -g)" \
-          --env VERSION \
           --env TARGET \
+          --env ACTION_MAKE_TARGET \
+          --env ACTION_ARTIFACT_DIR \
           --env GLUON_ACTION_BROKEN \
           --env GLUON_ACTION_DEPRECATED \
           --env GLUON_ACTION_AUTOUPDATER_ENABLED \
           --env GLUON_ACTION_AUTOUPDATER_BRANCH \
           --env GLUON_ACTION_RELEASE \
-          --volume "${GITHUB_WORKSPACE}:/gluon/artifacts" \
-          --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
-          --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
+          --volume "${GITHUB_WORKSPACE}/${ACTION_SITE_PATH}:/gluon/site-repo" \
+          --volume "${GITHUB_WORKSPACE}/${ACTION_GLUON_PATH}:/gluon/gluon-repo" \
           sdk
       env:
-        VERSION: ${{ inputs.gluon-version }}
-        TARGET: ${{ inputs.target }}
+        TARGET: ${{ inputs.hardware-target }}
+        ACTION_MAKE_TARGET: ${{ inputs.make-target }}
+        ACTION_ARTIFACT_DIR: ${{ inputs.artifact-dir }}
+        ACTION_GLUON_PATH: ${{ inputs.gluon-path }}
+        ACTION_SITE_PATH: ${{ inputs.site-path }}
         GLUON_ACTION_BROKEN: ${{ inputs.broken }}
         GLUON_ACTION_DEPRECATED: ${{ inputs.deprecated }}
         GLUON_ACTION_AUTOUPDATER_ENABLED: ${{ inputs.autoupdater-enabled }}

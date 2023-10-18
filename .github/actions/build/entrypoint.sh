@@ -17,12 +17,5 @@ echo "Extra args for build: ${GLUON_MAKE_ARGS}"
 ln -s /gluon/site-repo /gluon/gluon-repo/site
 
 # Build
-cd /gluon/gluon-repo
-make update
-make "GLUON_TARGET=${TARGET}" $GLUON_MAKE_ARGS V=s "-j$(nproc)"
+make -C /gluon/gluon-repo "$ACTION_MAKE_TARGET" "GLUON_TARGET=${TARGET}" $GLUON_MAKE_ARGS V=s "-j$(nproc)"
 echo "Build finished"
-
-# Pack images
-# ToDo: Make output artifact directory configurable
-mkdir /gluon/artifacts/output
-tar czf /gluon/artifacts/output/output.tar.gz output
