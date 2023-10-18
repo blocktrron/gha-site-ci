@@ -1,8 +1,8 @@
 name: 'Get targets for Gluon release'
 description: 'Returns targets available in a specified Gluon release'
 inputs:
-  gluon-version:
-    description: 'Gluon commit hash to retrieve targets from'
+  gluon-path:
+    description: 'Path to Gluon repository'
     required: true
   broken:
     description: 'Determines if BROKEN targets should be returned (Default: 0)'
@@ -14,13 +14,10 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - run: bash ${{ github.action_path }}/entrypoint.sh /tmp/targets.json
+    - run: bash ${{ github.action_path }}/entrypoint.sh $GITHUB_WORKSPACE/${{ input.gluon-path }} > /tmp/targets.json
       shell: bash
       env:
-        GLUON_VERSION: ${{ inputs.gluon-version }}
         BROKEN: ${{ inputs.broken }}
-    - run: cat /tmp/targets.json
-      shell: bash
     - run: echo "targets=$(cat /tmp/targets.json)" >> "$GITHUB_OUTPUT"
       shell: bash
       id: save-step

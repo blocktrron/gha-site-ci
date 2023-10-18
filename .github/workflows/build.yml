@@ -26,6 +26,11 @@ jobs:
     name: Get Gluon targets
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: 'freifunk-gluon/gluon'
+          ref: 'master'
+          path: 'gluon-gha-data/gluon'
       - name: Get Targets
         uses: ./.github/actions/get-targets
         id: get-targets

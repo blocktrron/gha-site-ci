@@ -2,17 +2,11 @@
 
 set -ef
 
-OUTPUT_FILE="$1"
+GLUON_PATH="$1"
+OUTPUT_FILE="$2"
 
-# Install dependencies
-# apt-get update
-# apt-get install -y make git jq
-
-# Clone repository & Checkout
-git clone https://github.com/freifunk-gluon/gluon.git gluon
-cd gluon
-git checkout "${GLUON_VERSION}"
-ln -s docs/site-example site
+# Link default site
+ln -s $GLUON_PATH/docs/site-example $GLUON_PATH/site
 
 # Get Target list
-make list-targets "BROKEN=${BROKEN}" | jq  --raw-input .  | jq --slurp . | jq -c . > "${OUTPUT_FILE}"
+make -C $GLUON_PATH list-targets "BROKEN=${BROKEN}" | jq  --raw-input .  | jq --slurp . | jq -c .
