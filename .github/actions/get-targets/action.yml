@@ -14,7 +14,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - run: bash ${{ github.action_path }}/entrypoint.sh $GITHUB_WORKSPACE/${{ input.gluon-path }} > /tmp/targets.json
+    - run: bash ${{ github.action_path }}/entrypoint.sh $GITHUB_WORKSPACE/${{ inputs.gluon-path }} > /tmp/targets.json
       shell: bash
       env:
         BROKEN: ${{ inputs.broken }}
