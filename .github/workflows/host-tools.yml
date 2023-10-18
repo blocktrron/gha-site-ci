@@ -25,9 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
-        repository: 'https://github.com/freifunk-gluon/gluon.git'
-        ref: 'master'
-        path: 'gluon-gha-data/gluon'
+        with:
+          repository: 'https://github.com/freifunk-gluon/gluon.git'
+          ref: 'master'
+          path: 'gluon-gha-data/gluon'
       - name: Build host-tools
         uses: ./.github/actions/tools
         id: build-host-tools
