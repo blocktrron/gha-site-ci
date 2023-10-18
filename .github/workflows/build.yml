@@ -35,7 +35,7 @@ jobs:
         uses: ./.github/actions/get-targets
         id: get-targets
         with:
-          gluon-version: "master"
+          gluon-path: "gluon-gha-data/gluon"
           broken: "1"
 
   build:
