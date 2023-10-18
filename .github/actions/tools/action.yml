@@ -1,0 +1,39 @@
+name: "Build OpenWrt host-tools"
+description: "Build reusable OpenWrt host-tools for use with Gluon"
+inputs:
+  gluon-version:
+    description: 'Gluon commit hash to build'
+    required: true
+  container-version:
+    description: 'Container version to use'
+    default: 'master'
+  artifacts:
+    description: 'Download directory for GitHub actions artifacts from Gluon build jobs'
+    default: "artifacts"
+
+runs:
+  using: 'composite'
+  steps:
+    - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
+      env:
+        VERSION: ${{ inputs.container-version }}
+      shell: bash
+    - run: git clone https://github.com/freifunk-gluon/gluon.git ${RUNNER_TEMP}/gluon; cd ${RUNNER_TEMP}/gluon; git checkout ${{ inputs.gluon-version }}
+      shell: bash
+    - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.artifacts }}"
+      shell: bash
+    - run: tree "${GITHUB_WORKSPACE}"
+      shell: bash
+    - run: |
+        docker run --rm \
+          --user "$(id -u):$(id -g)" \
+          --env VERSION \
+          --env GLUON_RELEASE \
+          --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
+          --volume "${GITHUB_WORKSPACE}/${ARTIFACT_DIR}:/gluon/artifacts" \
+          --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
+          sdk
+      env:
+        VERSION: ${{ inputs.gluon-version }}
+        ARTIFACT_DIR: ${{ inputs.artifacts }}
+      shell: bash
