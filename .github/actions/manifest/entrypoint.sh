@@ -51,6 +51,11 @@ for branch in $GLUON_MANIFEST_BRANCHES; do
 		"GLUON_IMAGEDIR=$GLUON_ARTIFACT_DIR/output/images"
 done
 
+# Copy Manifests to dedicated directory
+mkdir -p "$GLUON_ARTIFACT_DIR/manifests"
+find "$GLUON_ARTIFACT_DIR/output/images/sysupgrade" -name "*.TIF" -exec cp {} $GLUON_ARTIFACT_DIR/manifests \;
+
 # Pack output
-tar czf "$GLUON_ARTIFACT_DIR/output.tar.gz" -C "$GLUON_ARTIFACT_DIR" output
+tar czf "$GLUON_ARTIFACT_DIR/manifests.tar.gz" -C "$GLUON_ARTIFACT_DIR" manifests
 rm -rf "$GLUON_ARTIFACT_DIR/output"
+rm -rf "$GLUON_ARTIFACT_DIR/manifests"
