@@ -6,7 +6,7 @@
 OPENWRT_DIR="$GLUON_REPO/openwrt"
 OPENWRT_BUILD_DIR="$OPENWRT_DIR/build_dir"
 OPENWRT_STAGING_DIR="$OPENWRT_DIR/staging_dir"
-PACKING_STAGING_DIR="$RUNNER_TEMP/openwrt-tools"
+PACKING_STAGING_DIR="$OPENWRT_DIR/openwrt-tools"
 OPENWRT_LUA_TARGET="openwrt/staging_dir/hostpkg/bin/lua"
 
 ln -s /gluon/site-repo "$GLUON_REPO/site"
