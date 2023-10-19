@@ -5,7 +5,7 @@ inputs:
     description: 'Path to Gluon repository'
     required: true
   output-path:
-    description: 'Output path where host-tools should be stored'
+    description: 'Output path where OpenWrt should be stored'
     required: true
   container-version:
     description: 'Container version to use'
@@ -27,7 +27,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ${{ inputs.output-path }}
-        key: ${{ steps.cache-key.outputs.cache-key }}-tools-builddir
+        key: ${{ steps.cache-key.outputs.cache-key }}-openwrt
     - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
       if: steps.cache-tools.outputs.cache-hit != 'true'
       env:

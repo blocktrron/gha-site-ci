@@ -16,5 +16,4 @@ make -C "$GLUON_REPO" update
 make -C "$GLUON_REPO" "-j$(nproc)" V=s "openwrt/staging_dir/hostpkg/bin/lua"
 
 # Pack output
-tar cJf "$GLUON_ARTIFACT_DIR/openwrt-host-tools.tar.xz" -C "$OPENWRT_STAGING_DIR" host
-tar cJf "$GLUON_ARTIFACT_DIR/openwrt-build-dir.tar.xz" -C "$OPENWRT_DIR" build_dir
+tar cJf "$GLUON_ARTIFACT_DIR/openwrt.tar.xz" -C "$GLUON_REPO" openwrt
