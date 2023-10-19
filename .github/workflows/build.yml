@@ -38,8 +38,31 @@ jobs:
           gluon-path: "gluon-gha-data/gluon"
           broken: "1"
 
+  host-tools:
+    needs: build-meta
+    runs-on: ubuntu-latest
+    name: Build host-tools
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: 'freifunk-gluon/gluon'
+          ref: 'master'
+          path: 'gluon-gha-data/gluon'
+      - name: Build host-tools
+        uses: ./.github/actions/tools
+        id: build-host-tools
+        with:
+          gluon-path: "gluon-gha-data/gluon"
+          output-path: "gluon-gha-data/openwrt"
+      - name: Archive build output
+        uses: actions/upload-artifact@v3
+        with:
+          name: openwrt
+          path: "gluon-gha-data/openwrt"
+
   build:
-    needs: [ targets, build-meta ]
+    needs: [ targets, build-meta, host-tools ]
     if: ${{ needs.targets.outputs.targets != '[]' }}
     strategy:
       fail-fast: false
@@ -53,6 +76,15 @@ jobs:
           repository: 'freifunk-gluon/gluon'
           ref: 'master'
           path: 'gluon-gha-data/gluon'
+
+      - name: Download prepared OpenWrt
+        uses: actions/download-artifact@v3
+        with:
+          name: openwrt
+          path: "gluon-gha-data/openwrt"
+      
+      - name: Restore host-tools
+        run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
       
       - name: Gluon Update
         uses: ./.github/actions/build
