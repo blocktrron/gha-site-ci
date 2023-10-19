@@ -19,4 +19,4 @@ make -C "$GLUON_REPO" "-j$(nproc)" V=s "openwrt/staging_dir/hostpkg/bin/lua"
 rm -rf "$OPENWRT_DIR/dl"
 
 # Pack output
-tar cJfH "$GLUON_ARTIFACT_DIR/openwrt.tar.xz" -C "$GLUON_REPO" openwrt
+tar cJf "$GLUON_ARTIFACT_DIR/openwrt.tar.xz" -C "$GLUON_REPO" --posix openwrt

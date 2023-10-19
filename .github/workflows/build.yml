@@ -106,37 +106,26 @@ jobs:
           autoupdater-branch: ${{ needs.build-meta.outputs.autoupdater-branch }}
           release: ${{ needs.build-meta.outputs.release-version }}
       
-      - name: Pack build output
-        run: mkdir -p gluon-gha-data/artifacts; tar -cJf gluon-gha-data/artifacts/output.tar.xz -C gluon-gha-data/gluon output
-
-      - name: Archive build output
-        uses: actions/upload-artifact@v3
+      - name: Pack and Upload build output
+        uses: ./.github/actions/build-artifact
         with:
-          name: ${{ matrix.target }}
-          path: gluon-gha-data/artifacts
+          gluon-path: "gluon-gha-data/gluon"
+          hardware-target: ${{ matrix.target }}
 
   manifest:
     needs: [ build, build-meta, targets ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - name: Combine Build output
+        uses: ./.github/actions/build-artifact
         with:
-          path: gluon-gha-data/artifacts
-      - name: Create manifest
-        uses: ./.github/actions/manifest
-        id: manifest
-        with:
-          gluon-version: "master"
-          artifacts: artifacts
-          manifest-branches: "${{ needs.build-meta.outputs.manifest-branches }}" 
-          release: ${{ needs.build-meta.outputs.release-version }}
-          targets: ${{ needs.targets.outputs.targets }}
+          workdir: "gluon-gha-data/gluon"
       - name: Archive output
         uses: actions/upload-artifact@v3
         with:
           name: combined-manifest
-          path: artifacts
+          path: gluon-gha-data/gluon
 
   sign:
     needs: [ manifest, build-meta ]

@@ -1,0 +1,16 @@
+name: "Combine artifacts"
+description: "Combine artifacts built by build-artifact"
+inputs:
+  workdir:
+    description: 'Path in workspace to Workdir'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/download-artifact@v3
+      with:
+        path: ${{ inputs.workdir }}
+    - run: bash $GITHUB_ACTION_PATH/combine-build.sh
+      shell: bash
+      env:
+        ACTION_ARTIFACT_DIR: ${{ inputs.workdir }}
