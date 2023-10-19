@@ -16,6 +16,9 @@ inputs:
   make-target:
     description: 'Make target to use'
     default: 'all'
+  autoremove:
+    description: 'Remove build-directories after build (Default: 1)'
+    default: 1
   broken:
     description: 'Determines if BROKEN devices should be built (Default: 0)'
     default: 0
@@ -42,6 +45,7 @@ runs:
           --env ACTION_HARDWARE_TARGET \
           --env ACTION_MAKE_TARGET \
           --env ACTION_ARTIFACT_DIR \
+          --env ACTION_AUTOREMOVE \
           --env GLUON_ACTION_BROKEN \
           --env GLUON_ACTION_DEPRECATED \
           --env GLUON_ACTION_AUTOUPDATER_ENABLED \
@@ -51,6 +55,7 @@ runs:
           --volume "${GITHUB_WORKSPACE}/${ACTION_GLUON_PATH}:/gluon/gluon-repo" \
           sdk
       env:
+        ACTION_AUTOREMOVE: ${{ inputs.autoremove }}
         ACTION_HARDWARE_TARGET: ${{ inputs.hardware-target }}
         ACTION_MAKE_TARGET: ${{ inputs.make-target }}
         ACTION_ARTIFACT_DIR: ${{ inputs.artifact-dir }}

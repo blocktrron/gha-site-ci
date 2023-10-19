@@ -13,7 +13,7 @@ ln -s /gluon/site-repo "$GLUON_REPO/site"
 make -C "$GLUON_REPO" update
 
 # Compile Lua
-make -C "$GLUON_REPO" "-j$(nproc)" V=s "openwrt/staging_dir/hostpkg/bin/lua"
+make -C "$GLUON_REPO" "-j$(nproc)" V=s "GLUON_AUTOREMOVE=1" "openwrt/staging_dir/hostpkg/bin/lua"
 
 # Clean OpenWrt Download Cache
 rm -rf "$OPENWRT_DIR/dl"
