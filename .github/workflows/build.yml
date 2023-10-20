@@ -103,17 +103,27 @@ jobs:
         with:
           gluon-path: "gluon-gha-data/gluon"
           hardware-target: ${{ matrix.target }}
+          make-target: 'openwrt/staging_dir/hostpkg/bin/lua'
           broken: "1"
           deprecated: "0"
           autoupdater-enabled: ${{ needs.build-meta.outputs.autoupdater-enabled }}
           autoupdater-branch: ${{ needs.build-meta.outputs.autoupdater-branch }}
           release: ${{ needs.build-meta.outputs.release-version }}
       
-      - name: Pack and Upload build output
-        uses: ./.github/actions/build-artifact
+      - name: Pack OpenWrt Directory
+        run: mkdir -p gluon-gha-data/arti; tar cfJ gluon-gha-data/arti/openwrt.tar.xz -C gluon-gha-data/gluon openwrt
+        
+      - name: Archive OpenWrt Directory
+        uses: actions/upload-artifact@v3
         with:
-          gluon-path: "gluon-gha-data/gluon"
-          hardware-target: ${{ matrix.target }}
+          name: openwrt-${{ matrix.target }}
+          path: "gluon-gha-data/arti"
+      
+#      - name: Pack and Upload build output
+#        uses: ./.github/actions/build-artifact
+#        with:
+#          gluon-path: "gluon-gha-data/gluon"
+#          hardware-target: ${{ matrix.target }}
 
   manifest:
     needs: [ build, build-meta, targets ]
