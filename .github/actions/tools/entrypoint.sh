@@ -23,4 +23,4 @@ mv $OPENWRT_BUILD_DIR $PACKING_STAGING_DIR
 mv $OPENWRT_STAGING_DIR $PACKING_STAGING_DIR
 
 # Pack output
-tar cJf "$GLUON_ARTIFACT_DIR/openwrt.tar.xz" -C "$PACKING_STAGING_DIR" --posix staging_dir build_dir
+tar cJf "$GLUON_ARTIFACT_DIR/openwrt.tar.xz" -C "$PACKING_STAGING_DIR" staging_dir build_dir
