@@ -15,7 +15,7 @@ inputs:
     required: true
   make-target:
     description: 'Make target to use'
-    default: 'all'
+    default: ''
   autoremove:
     description: 'Remove build-directories after build (Default: 1)'
     default: 1
