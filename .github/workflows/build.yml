@@ -93,6 +93,9 @@ jobs:
 
       - name: Restore host-tools
         run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon/openwrt
+      
+      - name: Print directory structure
+        run: tree gluon-gha-data/gluon/openwrt
 
       - name: Build
         uses: ./.github/actions/build
