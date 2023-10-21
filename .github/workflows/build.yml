@@ -83,6 +83,9 @@ jobs:
           name: openwrt
           path: "gluon-gha-data/openwrt"
 
+      - name: Restore OpenWrt
+        run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
+
       - name: Gluon Update
         uses: ./.github/actions/build
         id: update-gluon
@@ -90,9 +93,6 @@ jobs:
           gluon-path: "gluon-gha-data/gluon"
           hardware-target: ath79-generic
           make-target: update
-
-      - name: Restore host-tools
-        run: tar xf  gluon-gha-data/openwrt/openwrt.tar.xz --touch -C gluon-gha-data/gluon/openwrt
       
       - name: Print directory structure
         run: tree gluon-gha-data/gluon/openwrt

@@ -27,7 +27,7 @@ runs:
       uses: actions/cache@v3
       with:
         path: ${{ inputs.output-path }}
-        key: ${{ steps.cache-key.outputs.cache-key }}-openwrt-tree
+        key: ${{ steps.cache-key.outputs.cache-key }}-openwrt-tree-full
     - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
       if: steps.cache-tools.outputs.cache-hit != 'true'
       env:
