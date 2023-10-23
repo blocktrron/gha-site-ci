@@ -120,8 +120,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          path: "gluon-gha-data/gluon"
       - name: Combine Build output
-        uses: ./.github/actions/build-artifact
+        uses: ./.github/actions/build-combine
         with:
           workdir: "gluon-gha-data/gluon"
       - name: Archive output

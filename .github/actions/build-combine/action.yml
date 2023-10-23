@@ -7,9 +7,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: actions/download-artifact@v3
-      with:
-        path: ${{ inputs.workdir }}
     - run: bash $GITHUB_ACTION_PATH/combine-build.sh
       shell: bash
       env:
