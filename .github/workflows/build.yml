@@ -46,8 +46,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
         with:
-          repository: 'blocktrron/gluon'
-          ref: 'fix-host-double-build'
+          repository: 'freifunk-gluon/gluon'
+          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
           path: 'gluon-gha-data/gluon'
       - name: Build host-tools
         uses: ./.github/actions/tools
@@ -73,8 +73,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
         with:
-          repository: 'blocktrron/gluon'
-          ref: 'fix-host-double-build'
+          repository: 'freifunk-gluon/gluon'
+          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
           path: 'gluon-gha-data/gluon'
 
       - name: Download prepared OpenWrt
