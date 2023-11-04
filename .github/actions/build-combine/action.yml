@@ -4,6 +4,9 @@ inputs:
   workdir:
     description: 'Path in workspace to Workdir'
     required: true
+  targets:
+    description: 'JSON Array containing all names of targets build-jobs were created for'
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -11,3 +14,4 @@ runs:
       shell: bash
       env:
         ACTION_ARTIFACT_DIR: ${{ inputs.workdir }}
+        ACTION_TARGETS: ${{ inputs.targets }}

@@ -127,6 +127,7 @@ jobs:
         uses: ./.github/actions/build-combine
         with:
           workdir: "gluon-gha-data/gluon"
+          targets: ${{ needs.targets.outputs.targets }}
       - name: Archive output
         uses: actions/upload-artifact@v3
         with:
