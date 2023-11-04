@@ -12,7 +12,6 @@ inputs:
     default: ''
   hardware-target:
     description: 'Target to build'
-    required: true
   make-target:
     description: 'Make target to use'
     default: ''
