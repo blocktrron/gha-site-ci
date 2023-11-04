@@ -31,6 +31,8 @@ inputs:
     description: 'Default branch for the Autoupdater'
   release:
     description: 'Version string for the release to use'
+  priority:
+    description: Priority indicator for the autoupdater
 runs:
   using: 'composite'
   steps:
@@ -42,6 +44,7 @@ runs:
         docker run --rm \
           --user "$(id -u):$(id -g)" \
           --env ACTION_HARDWARE_TARGET \
+          --env ACTION_PRIORITY \
           --env ACTION_MAKE_TARGET \
           --env ACTION_ARTIFACT_DIR \
           --env ACTION_AUTOREMOVE \
@@ -56,6 +59,7 @@ runs:
       env:
         ACTION_AUTOREMOVE: ${{ inputs.autoremove }}
         ACTION_HARDWARE_TARGET: ${{ inputs.hardware-target }}
+        ACTION_PRIORITY: ${{ inputs.priority }}
         ACTION_MAKE_TARGET: ${{ inputs.make-target }}
         ACTION_ARTIFACT_DIR: ${{ inputs.artifact-dir }}
         ACTION_GLUON_PATH: ${{ inputs.gluon-path }}

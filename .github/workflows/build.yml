@@ -128,6 +128,13 @@ jobs:
         with:
           workdir: "gluon-gha-data/gluon"
           targets: ${{ needs.targets.outputs.targets }}
+      - name: Build Manifest
+        uses: ./.github/actions/build
+        with:
+          gluon-path: "gluon-gha-data/gluon"
+          make-target: manifest
+          autoupdater-branch: beta
+          priority: 1
       - name: Archive output
         uses: actions/upload-artifact@v3
         with:
