@@ -20,7 +20,7 @@ ARTIFACT_OUT_DIR="$RUNNER_TEMP/output"
 mkdir "$ARTIFACT_OUT_DIR"
 for artifact_target in $ARTIFACT_NAMES ; do
 	# Check if artifact in list. Only delete otherwise.
-	if [ -n "$PARSED_TARGET_LIST" ] && [[ "$PARSED_TARGET_LIST" =~ "$artifact_target" ]]; then
+	if [ -n "$TARGET_LIST" ] && [[ "$TARGET_LIST" =~ "$artifact_target" ]]; then
 		echo "Combining ${artifact_target}"
 
 		# Unpack archive
