@@ -24,8 +24,8 @@ for artifact_target in $ARTIFACT_NAMES ; do
 		echo "Combining ${artifact_target}"
 
 		# Unpack archive
-		tar xf "${ACTION_ARTIFACT_DIR}/${artifact_target}/output.tar.gz" -C "${ACTION_ARTIFACT_DIR}/${artifact_target}"
-		rm "${ACTION_ARTIFACT_DIR}/${artifact_target}/output.tar.gz"
+		tar xf "${ACTION_ARTIFACT_DIR}/${artifact_target}/output.tar.xz" -C "${ACTION_ARTIFACT_DIR}/${artifact_target}"
+		rm "${ACTION_ARTIFACT_DIR}/${artifact_target}/output.tar.xz"
 
 		# Combine targets
 		rsync -a ${ACTION_ARTIFACT_DIR}/${artifact_target}/* "$ARTIFACT_OUT_DIR"

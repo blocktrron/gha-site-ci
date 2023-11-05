@@ -123,6 +123,8 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           path: "gluon-gha-data/gluon-output"
+      - name: Print Output Directory structure
+        run: tree gluon-gha-data/gluon-output
       - name: Combine Build output
         uses: ./.github/actions/build-combine
         with:
