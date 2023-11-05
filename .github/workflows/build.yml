@@ -122,12 +122,29 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
-          path: "gluon-gha-data/gluon"
+          path: "gluon-gha-data/gluon-output"
       - name: Combine Build output
         uses: ./.github/actions/build-combine
         with:
-          workdir: "gluon-gha-data/gluon"
+          workdir: "gluon-gha-data/gluon-output"
           targets: ${{ needs.targets.outputs.targets }}
+      - name: Print Output Directory structure
+        run: tree gluon-gha-data/gluon-output
+      - name: Clone Gluon
+        uses: actions/checkout@v3
+        with:
+          repository: 'freifunk-gluon/gluon'
+          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
+          path: 'gluon-gha-data/gluon'
+      - name: Download prepared OpenWrt
+        uses: actions/download-artifact@v3
+        with:
+          name: openwrt
+          path: "gluon-gha-data/openwrt"
+      - name: Restore OpenWrt
+        run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
+      - name: Move Gluon output directory
+        run: mv gluon-gha-data/gluon-output/output gluon-gha-data/gluon
       - name: Build Manifest
         uses: ./.github/actions/build
         with:
