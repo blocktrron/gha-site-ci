@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: 'freifunk-gluon/gluon'
-          ref: 'master'
+          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
           path: 'gluon-gha-data/gluon'
       - name: Get Targets
         uses: ./.github/actions/get-targets
