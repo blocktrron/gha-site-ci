@@ -7,6 +7,10 @@ SCRIPT_DIR="$(dirname "$0")"
 DEPLOY=0
 DEFAULT_RELEASE_VERSION=$(make --no-print-directory -C $SCRIPT_DIR -f ci-build.mk version)
 
+MANIFEST_STABLE="0"
+MANIFEST_BETA="0"
+MANIFEST_TESTING="0"
+
 # Determine Autoupdater Branch to use
 if [ "$GITHUB_REF_TYPE" = "branch" ]; then
 	# Don't generate manifest on push
@@ -19,10 +23,13 @@ if [ "$GITHUB_REF_TYPE" = "branch" ]; then
 		# Push to master - autoupdater Branch is testing and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="testing"
+		MANIFEST_TESTING="1"
 	elif [ -n "${GITHUB_REF_NAME%%v*}" ]; then
 		# Push to release branch - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="stable"
+		MANIFEST_STABLE="1"
+		MANIFEST_BETA="1"
 	else
 		# Push to unknown branch - Disable autoupdater
 		AUTOUPDATER_ENABLED=0
@@ -34,13 +41,14 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 	if [[ "$GITHUB_REF_NAME" =~ "~" ]]; then
 		# Testing release - autoupdater Branch is testing and enabled
 		AUTOUPDATER_ENABLED=1
-		AUTOUPDATER_BRANCH="stable"
-		MANIFEST_BRANCHES="testing"
+		AUTOUPDATER_BRANCH="testing"
+		MANIFEST_TESTING="1"
 	else
 		# Stable release - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="stable"
-		MANIFEST_BRANCHES="stable beta"
+		MANIFEST_STABLE="1"
+		MANIFEST_BETA="1"
 	fi
 else
 	echo "Unknown ref type $GITHUB_REF_TYPE"
@@ -53,7 +61,9 @@ fi
 echo "release-version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 echo "autoupdater-enabled=$AUTOUPDATER_ENABLED" >> "$GITHUB_OUTPUT"
 echo "autoupdater-branch=$AUTOUPDATER_BRANCH" >> "$GITHUB_OUTPUT"
-echo "manifest-branches=$MANIFEST_BRANCHES" >> "$GITHUB_OUTPUT"
+echo "manifest-stable=$MANIFEST_STABLE" >> "$GITHUB_OUTPUT"
+echo "manifest-beta=$MANIFEST_BETA" >> "$GITHUB_OUTPUT"
+echo "manifest-testing=$MANIFEST_TESTING" >> "$GITHUB_OUTPUT"
 echo "deploy=$DEPLOY" >> "$GITHUB_OUTPUT"
 
 cat "$GITHUB_OUTPUT"

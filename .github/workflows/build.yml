@@ -7,7 +7,9 @@ jobs:
       release-version: ${{ steps.build-metadata.outputs.release-version }}
       autoupdater-enabled: ${{ steps.build-metadata.outputs.autoupdater-enabled }}
       autoupdater-branch: ${{ steps.build-metadata.outputs.autoupdater-branch }}
-      manifest-branches: ${{ steps.build-metadata.outputs.manifest-branches }}
+      manifest-stable: ${{ steps.build-metadata.outputs.manifest-stable }}
+      manifest-beta: ${{ steps.build-metadata.outputs.manifest-beta }}
+      manifest-testing: ${{ steps.build-metadata.outputs.manifest-testing }}
     runs-on: ubuntu-latest
     name: Determine build-meta
     steps:
@@ -153,18 +155,37 @@ jobs:
         with: 
           gluon-path: "gluon-gha-data/gluon"
           make-target: update
-      - name: Build Manifest
+      - name: Manifest (Stable)
         uses: ./.github/actions/build
+        if: ${{ needs.build-meta.outputs.manifest-stable != '0' }}
+        with:
+          gluon-path: "gluon-gha-data/gluon"
+          make-target: manifest
+          autoupdater-branch: stable
+          priority: 1
+      - name: Manifest (Beta)
+        uses: ./.github/actions/build
+        if: ${{ needs.build-meta.outputs.manifest-beta != '0' }}
         with:
           gluon-path: "gluon-gha-data/gluon"
           make-target: manifest
           autoupdater-branch: beta
           priority: 1
+      - name: Manifest (Testing)
+        uses: ./.github/actions/build
+        if: ${{ needs.build-meta.outputs.manifest-testing != '0' }}
+        with:
+          gluon-path: "gluon-gha-data/gluon"
+          make-target: manifest
+          autoupdater-branch: testing
+          priority: 1
+      - name: Pack Output directory
+        run: tar cJf gluon-gha-data/artifact-out/output.tar.gz -C gluon-gha-data/gluon output
       - name: Archive output
         uses: actions/upload-artifact@v3
         with:
-          name: combined-manifest
-          path: gluon-gha-data/gluon
+          name: manifest-signed
+          path: gluon-gha-data/artifact-out
 
   sign:
     needs: [ manifest, build-meta ]
