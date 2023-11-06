@@ -14,9 +14,6 @@ GLUON_MAKE_ARGS=""
 
 echo "Extra args for build: ${GLUON_MAKE_ARGS}"
 
-# Link repository
-ln -s /gluon/site-repo /gluon/gluon-repo/site
-
 # Build
-make -C /gluon/gluon-repo $ACTION_MAKE_TARGET $GLUON_MAKE_ARGS V=s "-j$(nproc)"
+make -C /gluon/gluon-repo $ACTION_MAKE_TARGET $GLUON_MAKE_ARGS GLUON_SITEDIR=/gluon/site-repo V=s "-j$(nproc)"
 echo "Build finished"
