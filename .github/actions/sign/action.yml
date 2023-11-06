@@ -13,8 +13,8 @@ inputs:
   signing-key:
     description: 'ECDSA key to sign manifest with'
     required: true
-  manifest-branches:
-    description: 'Space-seperated Manifest names to sign'
+  manifest-branch:
+    description: 'Manifest branch to sign'
     required: true
 
 runs:
@@ -32,7 +32,6 @@ runs:
         docker run --rm \
           --user "$(id -u):$(id -g)" \
           --env ACTION_OUTPUT_DIR \
-          --env ACTION_SIGNING_KEY \
           --env ACTION_MANIFEST_BRANCHES \
           --volume "${GITHUB_WORKSPACE}/${ACTION_OUTPUT_DIR}:/gluon/output-dir" \
           --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
@@ -41,6 +40,5 @@ runs:
           sdk
       env:
         ACTION_OUTPUT_DIR: ${{ inputs.output-dir }}
-        ACTION_SIGNING_KEY: ${{ inputs.signing-key }}
-        ACTION_MANIFEST_BRANCHES: ${{ inputs.manifest-branches }}
+        ACTION_MANIFEST: ${{ inputs.manifest-branch }}
       shell: bash

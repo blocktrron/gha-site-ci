@@ -14,11 +14,14 @@ jobs:
     name: Determine build-meta
     steps:
       - uses: actions/checkout@v3
+
       - name: Get build-metadata
         id: build-metadata
         run: bash .github/build-meta.sh
+
       - name: Print build-metadata
         run: cat $GITHUB_OUTPUT
+
 
   targets:
     needs: build-meta
@@ -28,17 +31,20 @@ jobs:
     name: Get Gluon targets
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/checkout@v3
         with:
           repository: 'freifunk-gluon/gluon'
           ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
           path: 'gluon-gha-data/gluon'
+
       - name: Get Targets
         uses: ./.github/actions/get-targets
         id: get-targets
         with:
           gluon-path: "gluon-gha-data/gluon"
           broken: "1"
+
 
   host-tools:
     needs: build-meta
@@ -51,17 +57,20 @@ jobs:
           repository: 'freifunk-gluon/gluon'
           ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
           path: 'gluon-gha-data/gluon'
+
       - name: Build host-tools
         uses: ./.github/actions/tools
         id: build-host-tools
         with:
           gluon-path: "gluon-gha-data/gluon"
           output-path: "gluon-gha-data/openwrt"
+
       - name: Archive build output
         uses: actions/upload-artifact@v3
         with:
           name: openwrt
           path: "gluon-gha-data/openwrt"
+
 
   build:
     needs: [ targets, build-meta, host-tools ]
@@ -73,6 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/checkout@v3
         with:
           repository: 'freifunk-gluon/gluon'
@@ -95,9 +105,6 @@ jobs:
           gluon-path: "gluon-gha-data/gluon"
           hardware-target: ath79-generic
           make-target: update
-      
-      - name: Print directory structure
-        run: tree gluon-gha-data/gluon/openwrt
 
       - name: Build
         uses: ./.github/actions/build
@@ -117,44 +124,55 @@ jobs:
           gluon-path: "gluon-gha-data/gluon"
           hardware-target: ${{ matrix.target }}
 
+
   manifest:
     needs: [ build, build-meta, targets ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions/download-artifact@v3
         with:
           path: "gluon-gha-data/gluon-output"
+
       - name: Print Output Directory structure
         run: tree gluon-gha-data/gluon-output
+
       - name: Combine Build output
         uses: ./.github/actions/build-combine
         with:
           workdir: "gluon-gha-data/gluon-output"
           targets: ${{ needs.targets.outputs.targets }}
+
       - name: Print Output Directory structure
         run: tree gluon-gha-data/gluon-output
+
       - name: Clone Gluon
         uses: actions/checkout@v3
         with:
           repository: 'freifunk-gluon/gluon'
           ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
           path: 'gluon-gha-data/gluon'
+
       - name: Download prepared OpenWrt
         uses: actions/download-artifact@v3
         with:
           name: openwrt
           path: "gluon-gha-data/openwrt"
+
       - name: Restore OpenWrt
         run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
+
       - name: Move Gluon output directory
         run: mv gluon-gha-data/gluon-output/output gluon-gha-data/gluon
+
       - name: Gluon Update
         uses: ./.github/actions/build
         id: update-gluon
         with: 
           gluon-path: "gluon-gha-data/gluon"
           make-target: update
+
       - name: Manifest (Stable)
         uses: ./.github/actions/build
         if: ${{ needs.build-meta.outputs.manifest-stable != '0' }}
@@ -163,6 +181,7 @@ jobs:
           make-target: manifest
           autoupdater-branch: stable
           priority: 1
+
       - name: Manifest (Beta)
         uses: ./.github/actions/build
         if: ${{ needs.build-meta.outputs.manifest-beta != '0' }}
@@ -171,6 +190,7 @@ jobs:
           make-target: manifest
           autoupdater-branch: beta
           priority: 1
+
       - name: Manifest (Testing)
         uses: ./.github/actions/build
         if: ${{ needs.build-meta.outputs.manifest-testing != '0' }}
@@ -179,33 +199,39 @@ jobs:
           make-target: manifest
           autoupdater-branch: testing
           priority: 1
+      
+      - name: Sign manifest (Stable)
+        uses: ./.github/actions/sign
+        if: ${{ needs.build-meta.outputs.manifest-stable != '0' }}
+        with:
+          gluon-version: "master"
+          output-dir: gluon-gha-data/gluon/output
+          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
+          manifest-branch: "stable"
+
+      - name: Sign manifest (Beta)
+        uses: ./.github/actions/sign
+        if: ${{ needs.build-meta.outputs.manifest-beta != '0' }}
+        with:
+          gluon-version: "master"
+          output-dir: gluon-gha-data/gluon/output
+          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
+          manifest-branch: "beta"
+
+      - name: Sign manifest (Testing)
+        uses: ./.github/actions/sign
+        if: ${{ needs.build-meta.outputs.manifest-testing != '0' }}
+        with:
+          gluon-version: "master"
+          output-dir: gluon-gha-data/gluon/output
+          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
+          manifest-branch: "testing"
+
       - name: Pack Output directory
         run: tar cJf gluon-gha-data/artifact-out/output.tar.gz -C gluon-gha-data/gluon output
+
       - name: Archive output
         uses: actions/upload-artifact@v3
         with:
           name: manifest-signed
           path: gluon-gha-data/artifact-out
-
-  sign:
-    needs: [ manifest, build-meta ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: combined-manifest
-          path: artifact-in
-      - name: Sign manifest
-        uses: ./.github/actions/sign
-        id: sign
-        with:
-          gluon-version: "master"
-          output-dir: artifact-in
-          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
-          manifest-branches: "${{ needs.build-meta.outputs.autoupdater-branch }}" 
-      - name: Archive output
-        uses: actions/upload-artifact@v3
-        with:
-          name: combined-signed
-          path: artifact-in
