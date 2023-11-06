@@ -147,6 +147,12 @@ jobs:
         run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
       - name: Move Gluon output directory
         run: mv gluon-gha-data/gluon-output/output gluon-gha-data/gluon
+      - name: Gluon Update
+        uses: ./.github/actions/build
+        id: update-gluon
+        with: 
+          gluon-path: "gluon-gha-data/gluon"
+          make-target: update
       - name: Build Manifest
         uses: ./.github/actions/build
         with:

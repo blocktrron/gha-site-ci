@@ -39,4 +39,4 @@ done
 rm -rf "${ACTION_ARTIFACT_DIR}/*"
 
 # Move combined artifacts to artifact directory
-mv "$ARTIFACT_OUT_DIR" "$ACTION_ARTIFACT_DIR"
+mv "$ARTIFACT_OUT_DIR/output" "$ACTION_ARTIFACT_DIR"
