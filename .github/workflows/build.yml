@@ -7,6 +7,8 @@ jobs:
       release-version: ${{ steps.build-metadata.outputs.release-version }}
       autoupdater-enabled: ${{ steps.build-metadata.outputs.autoupdater-enabled }}
       autoupdater-branch: ${{ steps.build-metadata.outputs.autoupdater-branch }}
+      gluon-repository: ${{ steps.build-metadata.outputs.gluon-repository }}
+      gluon-commit: ${{ steps.build-metadata.outputs.gluon-commit }}
       manifest-stable: ${{ steps.build-metadata.outputs.manifest-stable }}
       manifest-beta: ${{ steps.build-metadata.outputs.manifest-beta }}
       manifest-testing: ${{ steps.build-metadata.outputs.manifest-testing }}
@@ -34,8 +36,8 @@ jobs:
 
       - uses: actions/checkout@v3
         with:
-          repository: 'freifunk-gluon/gluon'
-          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
+          repository: ${{ needs.build-meta.outputs.gluon-repository }}
+          ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
 
       - name: Get Targets
@@ -54,8 +56,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/checkout@v3
         with:
-          repository: 'freifunk-gluon/gluon'
-          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
+          repository: ${{ needs.build-meta.outputs.gluon-repository }}
+          ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
 
       - name: Build host-tools
@@ -85,8 +87,8 @@ jobs:
 
       - uses: actions/checkout@v3
         with:
-          repository: 'freifunk-gluon/gluon'
-          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
+          repository: ${{ needs.build-meta.outputs.gluon-repository }}
+          ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
 
       - name: Download prepared OpenWrt
@@ -150,8 +152,8 @@ jobs:
       - name: Clone Gluon
         uses: actions/checkout@v3
         with:
-          repository: 'freifunk-gluon/gluon'
-          ref: '4606fe89cb4151cb0f6bccd06d39dd4cac4a9ac4'
+          repository: ${{ needs.build-meta.outputs.gluon-repository }}
+          ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
 
       - name: Download prepared OpenWrt
