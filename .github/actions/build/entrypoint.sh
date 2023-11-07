@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ef
+set -euxo pipefail
 
 # Determine Gluon Make args
 GLUON_MAKE_ARGS=""

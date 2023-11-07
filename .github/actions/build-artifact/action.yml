@@ -1,11 +1,11 @@
 name: "Create Artifact for single-target Gluon-build"
-description: "Create an artifact for a single Gluon-target which can be re-used with the buildcombine actions"
+description: "Create an artifact for a single Gluon-target which can be re-used with the build-combine action"
 inputs:
   gluon-path:
-    description: 'Path to Gluon repository'
+    description: 'Path to Gluon repository containing the output directory'
     required: true
   hardware-target:
-    description: 'Target to build'
+    description: 'Hardware target to create the artifact for'
     required: true
 runs:
   using: 'composite'
@@ -18,4 +18,5 @@ runs:
       with:
         name: ${{ inputs.hardware-target }}
         path: build-artifact-workdir
-
+    - run: rm -rf "$GITHUB_WORKSPACE/build-artifact-workdir"
+      shell: bash

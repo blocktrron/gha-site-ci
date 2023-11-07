@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 # Generate space-separated list of targets to combine
 TARGET_LIST=""
 if [ -n "$ACTION_TARGETS" ]; then

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euxo pipefail
 
 GLUON_DIR=$1
 OPENWRT_PATCHES_ARCHIVE="/tmp/openwrt-patches.tar"

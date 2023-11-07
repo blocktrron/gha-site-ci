@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 [ -n "$GLUON_REPO" ] || GLUON_REPO="/gluon/gluon-repo"
 [ -n "$GLUON_ARTIFACT_DIR" ] || GLUON_ARTIFACT_DIR="/gluon/artifacts"
 

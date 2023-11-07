@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euxo pipefail
 
 SCRIPT_DIR="$(dirname "$0")"
 
