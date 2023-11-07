@@ -2,7 +2,7 @@ name: "Sign Gluon Manifest"
 description: "Sign Gluon Manifest using the build-gluon container"
 inputs:
   gluon-path:
-    description: 'Path to a updated Gluon repository'
+    description: 'Path to an initialized Gluon repository'
     required: true
   container-version:
     description: 'Container version to use'
