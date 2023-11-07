@@ -9,7 +9,7 @@ GLUON_REPOSITORY=$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")
 GLUON_COMMIT=$(jq -r -e .gluon.commit "$SCRIPT_DIR/build-info.json")
 
 DEPLOY=0
-DEFAULT_RELEASE_VERSION=$(make --no-print-directory -C $SCRIPT_DIR -f ci-build.mk version)
+DEFAULT_RELEASE_VERSION="$(make --no-print-directory -C $SCRIPT_DIR -f ci-build.mk version)"
 
 MANIFEST_STABLE="0"
 MANIFEST_BETA="0"
@@ -60,7 +60,7 @@ else
 fi
 
 # Determine Version to use
-[ -n "$RELEASE_VERSION" ] || RELEASE_VERSION="$DEFAULT_RELEASE_VERSION"
+RELEASE_VERSION="${RELEASE_VERSION:-$DEFAULT_RELEASE_VERSION}"
 
 echo "gluon-repository=$GLUON_REPOSITORY" >> "$GITHUB_OUTPUT"
 echo "gluon-commit=$GLUON_COMMIT" >> "$GITHUB_OUTPUT"
