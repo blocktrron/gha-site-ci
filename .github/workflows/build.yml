@@ -90,6 +90,12 @@ jobs:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
+      
+      - name: Print CPU info
+        run: cat /proc/cpuinfo
+      
+      - name: Print meminfo
+        run: cat /proc/meminfo
 
       - name: Download prepared OpenWrt
         uses: actions/download-artifact@v3
