@@ -237,3 +237,32 @@ jobs:
         with:
           name: manifest-signed
           path: gluon-gha-data/artifact-out
+
+
+  deploy:
+    needs: [ build, build-meta, targets, manifest ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          path: "gluon-gha-data/artifact-download"
+
+      - name: Print Output Directory structure
+        run: tree gluon-gha-data/artifact-download
+      
+      - name: Save Manifest archive
+        run: cp gluon-gha-data/artifact-download/manifest-signed/manifest.tar.xz gluon-gha-data/manifest.tar.xz
+
+      - name: Combine Build output
+        uses: ./.github/actions/build-combine
+        with:
+          workdir: "gluon-gha-data/artifact-download"
+          targets: ${{ needs.targets.outputs.targets }}
+      
+      - name: Extract Manifest
+        run: tar xf gluon-gha-data/manifest.tar.xz -C gluon-gha-data/artifact-download/output/images/sysupgrade
+      
+      - name: Show Directory structure
+        run: tree gluon-gha-data/artifact-download 
