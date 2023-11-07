@@ -32,7 +32,7 @@ runs:
         docker run --rm \
           --user "$(id -u):$(id -g)" \
           --env ACTION_OUTPUT_DIR \
-          --env ACTION_MANIFEST_BRANCHES \
+          --env ACTION_MANIFEST \
           --volume "${GITHUB_WORKSPACE}/${ACTION_OUTPUT_DIR}:/gluon/output-dir" \
           --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
           --volume "${RUNNER_TEMP}/gluon:/gluon/gluon-repo" \
