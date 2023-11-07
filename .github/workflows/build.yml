@@ -204,7 +204,7 @@ jobs:
         uses: ./.github/actions/sign
         if: ${{ needs.build-meta.outputs.manifest-stable != '0' }}
         with:
-          gluon-version: "master"
+          gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
           signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
           manifest-branch: "stable"
@@ -213,7 +213,7 @@ jobs:
         uses: ./.github/actions/sign
         if: ${{ needs.build-meta.outputs.manifest-beta != '0' }}
         with:
-          gluon-version: "master"
+          gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
           signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
           manifest-branch: "beta"
@@ -222,7 +222,7 @@ jobs:
         uses: ./.github/actions/sign
         if: ${{ needs.build-meta.outputs.manifest-testing != '0' }}
         with:
-          gluon-version: "master"
+          gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
           signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
           manifest-branch: "testing"
