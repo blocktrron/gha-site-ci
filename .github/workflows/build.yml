@@ -229,8 +229,8 @@ jobs:
           signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
           manifest-branch: "testing"
 
-      - name: Pack Output directory
-        run: tar cJf gluon-gha-data/artifact-out/output.tar.gz -C gluon-gha-data/gluon output
+      - name: Pack Manifest
+        run: tar cJf gluon-gha-data/artifact-out/manifest.tar.xz -C gluon-gha-data/gluon/output/images/sysupgrade *.manifest
 
       - name: Archive output
         uses: actions/upload-artifact@v3
