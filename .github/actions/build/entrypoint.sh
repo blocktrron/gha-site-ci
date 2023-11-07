@@ -2,6 +2,8 @@
 
 set -euxo pipefail
 
+BUILD_THREADS="$(($(nproc) + 1))"
+
 # Determine Gluon Make args
 GLUON_MAKE_ARGS=""
 [ -n ${ACTION_GLUON_AUTOREMOVE+x} ] && GLUON_MAKE_ARGS="${GLUON_MAKE_ARGS} GLUON_AUTOREMOVE=${ACTION_GLUON_AUTOREMOVE}"
@@ -12,8 +14,9 @@ GLUON_MAKE_ARGS=""
 [ -n ${ACTION_GLUON_RELEASE+x} ] && GLUON_MAKE_ARGS="${GLUON_MAKE_ARGS} GLUON_RELEASE=${ACTION_GLUON_RELEASE}"
 [ -n ${ACTION_GLUON_PRIORITY+x} ] && GLUON_MAKE_ARGS="${GLUON_MAKE_ARGS} GLUON_PRIORITY=${ACTION_GLUON_PRIORITY}"
 
+echo "Building with ${BUILD_THREADS} threads"
 echo "Extra args for build: ${GLUON_MAKE_ARGS}"
 
 # Build
-make -C /gluon/gluon-repo $ACTION_MAKE_TARGET $GLUON_MAKE_ARGS GLUON_SITEDIR=/gluon/site-repo V=s "-j$(nproc)"
+make -C /gluon/gluon-repo $ACTION_MAKE_TARGET $GLUON_MAKE_ARGS GLUON_SITEDIR=/gluon/site-repo V=s "-j$BUILD_THREADS"
 echo "Build finished"
