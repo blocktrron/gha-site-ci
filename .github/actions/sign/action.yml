@@ -1,5 +1,5 @@
-name: "Build Gluon"
-description: "Sign Gluon images using build-gluon container"
+name: "Sign Gluon Manifest"
+description: "Sign Gluon Manifest using the build-gluon container"
 inputs:
   gluon-path:
     description: 'Path to a updated Gluon repository'
@@ -8,13 +8,13 @@ inputs:
     description: 'Container version to use'
     default: 'master'
   output-dir:
-    description: 'Directory Gluons output folder is stored in'
+    description: 'Directory the output of Gluon is stored in'
     default: "gluon-output"
   signing-key:
     description: 'ECDSA key to sign manifest with'
     required: true
   manifest-branch:
-    description: 'Manifest branch to sign'
+    description: 'Name of the Autoupdater branch to sign the manifest for'
     required: true
 
 runs:
