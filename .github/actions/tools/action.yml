@@ -1,11 +1,8 @@
-name: "Build OpenWrt host-tools"
+name: "Build and cache Gluon host-tools"
 description: "Build reusable OpenWrt host-tools for use with Gluon"
 inputs:
   gluon-path:
     description: 'Path to Gluon repository'
-    required: true
-  output-path:
-    description: 'Output path where OpenWrt should be stored'
     required: true
   container-version:
     description: 'Container version to use'
@@ -33,21 +30,16 @@ runs:
       env:
         VERSION: ${{ inputs.container-version }}
       shell: bash
-    - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.output-path }}"
-      if: steps.cache-tools.outputs.cache-hit != 'true'
-      shell: bash
     - run: |
         docker run --rm \
           --user "$(id -u):$(id -g)" \
           --env VERSION \
           --volume "${GITHUB_WORKSPACE}:/gluon/site-repo" \
-          --volume "${GITHUB_WORKSPACE}/$ACTION_OUTPUT_PATH:/gluon/artifacts" \
           --volume "${GITHUB_WORKSPACE}/$ACTION_GLUON_PATH:/gluon/gluon-repo" \
           sdk
       if: steps.cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.gluon-version }}
-        ACTION_OUTPUT_PATH: ${{ inputs.output-path }}
         ACTION_GLUON_PATH: ${{ inputs.gluon-path }}
       shell: bash
 
