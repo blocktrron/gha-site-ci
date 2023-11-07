@@ -65,6 +65,7 @@ jobs:
         id: build-host-tools
         with:
           gluon-path: "gluon-gha-data/gluon"
+          output-path: "gluon-gha-data/openwrt"
 
       - name: Archive build output
         uses: actions/upload-artifact@v3
@@ -89,12 +90,23 @@ jobs:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
-      
-      - name: Build host-tools
-        uses: ./.github/actions/tools
-        id: build-host-tools
+
+      - name: Download prepared OpenWrt
+        uses: actions/download-artifact@v3
         with:
+          name: openwrt
+          path: "gluon-gha-data/openwrt"
+
+      - name: Restore OpenWrt
+        run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
+
+      - name: Gluon Update
+        uses: ./.github/actions/build
+        id: update-gluon
+        with: 
           gluon-path: "gluon-gha-data/gluon"
+          hardware-target: ath79-generic
+          make-target: update
 
       - name: Build
         uses: ./.github/actions/build
@@ -143,12 +155,15 @@ jobs:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
-      
-      - name: Build host-tools
-        uses: ./.github/actions/tools
-        id: build-host-tools
+
+      - name: Download prepared OpenWrt
+        uses: actions/download-artifact@v3
         with:
-          gluon-path: "gluon-gha-data/gluon"
+          name: openwrt
+          path: "gluon-gha-data/openwrt"
+
+      - name: Restore OpenWrt
+        run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
 
       - name: Move Gluon output directory
         run: mv gluon-gha-data/gluon-output/output gluon-gha-data/gluon
