@@ -43,30 +43,30 @@ runs:
     - run: |
         docker run --rm \
           --user "$(id -u):$(id -g)" \
-          --env ACTION_HARDWARE_TARGET \
-          --env ACTION_PRIORITY \
           --env ACTION_MAKE_TARGET \
           --env ACTION_ARTIFACT_DIR \
-          --env ACTION_AUTOREMOVE \
-          --env GLUON_ACTION_BROKEN \
-          --env GLUON_ACTION_DEPRECATED \
-          --env GLUON_ACTION_AUTOUPDATER_ENABLED \
-          --env GLUON_ACTION_AUTOUPDATER_BRANCH \
-          --env GLUON_ACTION_RELEASE \
+          --env ACTION_GLUON_AUTOREMOVE \
+          --env ACTION_GLUON_AUTOUPDATER_ENABLED \
+          --env ACTION_GLUON_AUTOUPDATER_BRANCH \
+          --env ACTION_GLUON_BROKEN \
+          --env ACTION_GLUON_DEPRECATED \
+          --env ACTION_GLUON_PRIORITY \
+          --env ACTION_GLUON_RELEASE \
+          --env ACTION_GLUON_TARGET \
           --volume "${GITHUB_WORKSPACE}/${ACTION_SITE_PATH}:/gluon/site-repo" \
           --volume "${GITHUB_WORKSPACE}/${ACTION_GLUON_PATH}:/gluon/gluon-repo" \
           sdk
       env:
-        ACTION_AUTOREMOVE: ${{ inputs.autoremove }}
-        ACTION_HARDWARE_TARGET: ${{ inputs.hardware-target }}
-        ACTION_PRIORITY: ${{ inputs.priority }}
+        ACTION_GLUON_AUTOREMOVE: ${{ inputs.autoremove }}
+        ACTION_GLUON_TARGET: ${{ inputs.hardware-target }}
+        ACTION_GLUON_PRIORITY: ${{ inputs.priority }}
         ACTION_MAKE_TARGET: ${{ inputs.make-target }}
         ACTION_ARTIFACT_DIR: ${{ inputs.artifact-dir }}
         ACTION_GLUON_PATH: ${{ inputs.gluon-path }}
         ACTION_SITE_PATH: ${{ inputs.site-path }}
-        GLUON_ACTION_BROKEN: ${{ inputs.broken }}
-        GLUON_ACTION_DEPRECATED: ${{ inputs.deprecated }}
-        GLUON_ACTION_AUTOUPDATER_ENABLED: ${{ inputs.autoupdater-enabled }}
-        GLUON_ACTION_AUTOUPDATER_BRANCH: ${{ inputs.autoupdater-branch }}
-        GLUON_ACTION_RELEASE: ${{ inputs.release }}
+        ACTION_GLUON_BROKEN: ${{ inputs.broken }}
+        ACTION_GLUON_DEPRECATED: ${{ inputs.deprecated }}
+        ACTION_GLUON_AUTOUPDATER_ENABLED: ${{ inputs.autoupdater-enabled }}
+        ACTION_GLUON_AUTOUPDATER_BRANCH: ${{ inputs.autoupdater-branch }}
+        ACTION_GLUON_RELEASE: ${{ inputs.release }}
       shell: bash
