@@ -21,9 +21,6 @@ jobs:
         id: build-metadata
         run: bash .github/build-meta.sh
 
-      - name: Print build-metadata
-        run: cat $GITHUB_OUTPUT
-
 
   targets:
     needs: build-meta
