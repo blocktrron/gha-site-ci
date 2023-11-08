@@ -5,7 +5,11 @@ set -euxo pipefail
 SCRIPT_DIR="$(dirname "$0")"
 
 # Release Branch regex
-RELEASE_BRANCH_RE="[2-9]\.[0-9]\.x"
+RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x"
+# Regex for testing firmware tag
+TESTING_TAG_RE="[2-9].[0-9]-[0-9]{8}$"
+# Regex for release firmware tag
+RELEASE_TAG_RE="[2-9].[0-9].[0-9]$"
 
 # Get Gluon version information
 GLUON_REPOSITORY="$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")"
@@ -51,19 +55,23 @@ if [ "$GITHUB_REF_TYPE" = "branch" ]; then
 elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 	DEPLOY=1
 
-	if [[ "$GITHUB_REF_NAME" =~ "~" ]]; then
+	if [[ "$GITHUB_REF_NAME" =~ $TESTING_TAG_RE ]]; then
 		# Testing release - autoupdater Branch is testing and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="testing"
 		MANIFEST_TESTING="1"
-		# We don't set RELEASE_VERSION here, we use the site-default. For now.
-	else
+		RELEASE_VERSION="$(echo "$GITHUB_REF_NAME" | tr '-' '~')"
+	elif [[ "$GITHUB_REF_NAME" =~ $RELEASE_TAG_RE ]]; then
 		# Stable release - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="stable"
 		MANIFEST_STABLE="1"
 		MANIFEST_BETA="1"
 		RELEASE_VERSION="$GITHUB_REF_NAME"
+	else
+		# Unknown release - Disable autoupdater
+		AUTOUPDATER_ENABLED=0
+		AUTOUPDATER_BRANCH="testing"
 	fi
 else
 	echo "Unknown ref type $GITHUB_REF_TYPE"
