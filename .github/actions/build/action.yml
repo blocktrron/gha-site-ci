@@ -1,5 +1,5 @@
 name: "Build Gluon"
-description: "Build Gluon images using build-gluon container"
+description: "Build Gluon images using the build-gluon docker container"
 inputs:
   container-version:
     description: 'Container version to use'
@@ -10,29 +10,29 @@ inputs:
   site-path:
     description: 'Path to Gluon site-directory'
     default: ''
-  hardware-target:
-    description: 'Target to build'
-  make-target:
-    description: 'Make target to use'
-    default: ''
   autoremove:
     description: 'Remove build-directories after build (Default: 1)'
     default: 1
+  autoupdater-enabled:
+    description: 'Autoupdater should be enabled by default (Default: 0)'
+    default: 0
+  autoupdater-branch:
+    description: 'Default branch for the Autoupdater'
   broken:
     description: 'Determines if BROKEN devices should be built (Default: 0)'
     default: 0
   deprecated:
     description: 'Determines if deprecated devices should be built (Default: 0)'
     default: 0
-  autoupdater-enabled:
-    description: 'Autoupdater should be enabled by default (Default: 0)'
-    default: 0
-  autoupdater-branch:
-    description: 'Default branch for the Autoupdater'
-  release:
-    description: 'Version string for the release to use'
+  hardware-target:
+    description: 'Target to build'
+  make-target:
+    description: 'Make target to use'
+    default: ''
   priority:
     description: Priority indicator for the autoupdater
+  release:
+    description: 'Version string for the release to use'
 runs:
   using: 'composite'
   steps:
@@ -44,7 +44,6 @@ runs:
         docker run --rm \
           --user "$(id -u):$(id -g)" \
           --env ACTION_MAKE_TARGET \
-          --env ACTION_ARTIFACT_DIR \
           --env ACTION_GLUON_AUTOREMOVE \
           --env ACTION_GLUON_AUTOUPDATER_ENABLED \
           --env ACTION_GLUON_AUTOUPDATER_BRANCH \
@@ -58,15 +57,14 @@ runs:
           sdk
       env:
         ACTION_GLUON_AUTOREMOVE: ${{ inputs.autoremove }}
-        ACTION_GLUON_TARGET: ${{ inputs.hardware-target }}
-        ACTION_GLUON_PRIORITY: ${{ inputs.priority }}
-        ACTION_MAKE_TARGET: ${{ inputs.make-target }}
-        ACTION_ARTIFACT_DIR: ${{ inputs.artifact-dir }}
-        ACTION_GLUON_PATH: ${{ inputs.gluon-path }}
-        ACTION_SITE_PATH: ${{ inputs.site-path }}
-        ACTION_GLUON_BROKEN: ${{ inputs.broken }}
-        ACTION_GLUON_DEPRECATED: ${{ inputs.deprecated }}
         ACTION_GLUON_AUTOUPDATER_ENABLED: ${{ inputs.autoupdater-enabled }}
         ACTION_GLUON_AUTOUPDATER_BRANCH: ${{ inputs.autoupdater-branch }}
+        ACTION_GLUON_BROKEN: ${{ inputs.broken }}
+        ACTION_GLUON_DEPRECATED: ${{ inputs.deprecated }}
+        ACTION_GLUON_PRIORITY: ${{ inputs.priority }}
         ACTION_GLUON_RELEASE: ${{ inputs.release }}
+        ACTION_GLUON_TARGET: ${{ inputs.hardware-target }}
+        ACTION_MAKE_TARGET: ${{ inputs.make-target }}
+        ACTION_GLUON_PATH: ${{ inputs.gluon-path }}
+        ACTION_SITE_PATH: ${{ inputs.site-path }}
       shell: bash
