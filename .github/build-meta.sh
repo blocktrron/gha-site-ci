@@ -32,6 +32,9 @@ MANIFEST_STABLE="0"
 MANIFEST_BETA="0"
 MANIFEST_TESTING="0"
 
+# Only Sign manifest on release builds
+SIGN_MANIFEST="0"
+
 echo "GitHub Ref-Type: $GITHUB_REF_TYPE"
 echo "GitHub Ref-Name: $GITHUB_REF_NAME"
 
@@ -62,6 +65,7 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 		AUTOUPDATER_BRANCH="testing"
 
 		MANIFEST_TESTING="1"
+		SIGN_MANIFEST="1"
 
 		RELEASE_VERSION="$(echo "$GITHUB_REF_NAME" | tr '-' '~')"
 		DEPLOY="1"
@@ -72,6 +76,7 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 
 		MANIFEST_STABLE="1"
 		MANIFEST_BETA="1"
+		SIGN_MANIFEST="1"
 
 		RELEASE_VERSION="$GITHUB_REF_NAME"
 		BROKEN="0"
@@ -101,6 +106,7 @@ echo "broken=$BROKEN" >> "$GITHUB_OUTPUT"
 echo "manifest-stable=$MANIFEST_STABLE" >> "$GITHUB_OUTPUT"
 echo "manifest-beta=$MANIFEST_BETA" >> "$GITHUB_OUTPUT"
 echo "manifest-testing=$MANIFEST_TESTING" >> "$GITHUB_OUTPUT"
+echo "sign-manifest=$SIGN_MANIFEST" >> "$GITHUB_OUTPUT"
 echo "deploy=$DEPLOY" >> "$GITHUB_OUTPUT"
 
 cat "$GITHUB_OUTPUT"

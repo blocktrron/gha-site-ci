@@ -14,6 +14,7 @@ jobs:
       manifest-stable: ${{ steps.build-metadata.outputs.manifest-stable }}
       manifest-beta: ${{ steps.build-metadata.outputs.manifest-beta }}
       manifest-testing: ${{ steps.build-metadata.outputs.manifest-testing }}
+      sign-manifest: ${{ steps.build-metadata.outputs.sign-manifest }}
     runs-on: ubuntu-latest
     name: Determine build-meta
     steps:
@@ -211,7 +212,7 @@ jobs:
       
       - name: Sign manifest (Stable)
         uses: ./.github/actions/sign
-        if: ${{ needs.build-meta.outputs.manifest-stable != '0' }}
+        if: ${{ needs.build-meta.outputs.manifest-stable != '0' && needs.build-meta.outputs.sign-manifest != '0' }}
         with:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
@@ -221,7 +222,7 @@ jobs:
 
       - name: Sign manifest (Beta)
         uses: ./.github/actions/sign
-        if: ${{ needs.build-meta.outputs.manifest-beta != '0' }}
+        if: ${{ needs.build-meta.outputs.manifest-beta != '0' && needs.build-meta.outputs.sign-manifest != '0' }}
         with:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
@@ -231,7 +232,7 @@ jobs:
 
       - name: Sign manifest (Testing)
         uses: ./.github/actions/sign
-        if: ${{ needs.build-meta.outputs.manifest-testing != '0' }}
+        if: ${{ needs.build-meta.outputs.manifest-testing != '0' && needs.build-meta.outputs.sign-manifest != '0' }}
         with:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
