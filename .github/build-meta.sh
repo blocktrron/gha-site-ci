@@ -4,6 +4,9 @@ set -euxo pipefail
 
 SCRIPT_DIR="$(dirname "$0")"
 
+# Build BROKEN by default. Disable for release builds
+BROKEN="1"
+
 # Release Branch regex
 RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x"
 # Regex for testing firmware tag
@@ -67,6 +70,7 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 		MANIFEST_STABLE="1"
 		MANIFEST_BETA="1"
 		RELEASE_VERSION="$GITHUB_REF_NAME"
+		BROKEN="0"
 		DEPLOY=1
 	else
 		# Unknown release - Disable autoupdater
@@ -89,6 +93,7 @@ echo "gluon-commit=$GLUON_COMMIT" >> "$GITHUB_OUTPUT"
 echo "release-version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 echo "autoupdater-enabled=$AUTOUPDATER_ENABLED" >> "$GITHUB_OUTPUT"
 echo "autoupdater-branch=$AUTOUPDATER_BRANCH" >> "$GITHUB_OUTPUT"
+echo "broken=$BROKEN" >> "$GITHUB_OUTPUT"
 echo "manifest-stable=$MANIFEST_STABLE" >> "$GITHUB_OUTPUT"
 echo "manifest-beta=$MANIFEST_BETA" >> "$GITHUB_OUTPUT"
 echo "manifest-testing=$MANIFEST_TESTING" >> "$GITHUB_OUTPUT"

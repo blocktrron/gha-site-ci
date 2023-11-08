@@ -8,6 +8,7 @@ jobs:
       release-version: ${{ steps.build-metadata.outputs.release-version }}
       autoupdater-enabled: ${{ steps.build-metadata.outputs.autoupdater-enabled }}
       autoupdater-branch: ${{ steps.build-metadata.outputs.autoupdater-branch }}
+      broken: ${{ steps.build-metadata.outputs.broken }}
       gluon-repository: ${{ steps.build-metadata.outputs.gluon-repository }}
       gluon-commit: ${{ steps.build-metadata.outputs.gluon-commit }}
       manifest-stable: ${{ steps.build-metadata.outputs.manifest-stable }}
@@ -43,7 +44,7 @@ jobs:
         id: get-targets
         with:
           gluon-path: "gluon-gha-data/gluon"
-          broken: "1"
+          broken: ${{ needs.build-meta.outputs.broken }}
 
 
   host-tools:
@@ -121,7 +122,7 @@ jobs:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           hardware-target: ${{ matrix.target }}
-          broken: "1"
+          broken: ${{ needs.build-meta.outputs.broken }}
           deprecated: "0"
           autoupdater-enabled: ${{ needs.build-meta.outputs.autoupdater-enabled }}
           autoupdater-branch: ${{ needs.build-meta.outputs.autoupdater-branch }}
