@@ -19,26 +19,40 @@ done
 
 # Combine artifacts
 ARTIFACT_OUT_DIR="$RUNNER_TEMP/output"
+EXTRACT_TEMP_DIR="$RUNNER_TEMP/extract"
+
 mkdir "$ARTIFACT_OUT_DIR"
 for artifact_target in $ARTIFACT_NAMES ; do
 	# Check if artifact in list. Only delete otherwise.
 	if [ -n "$TARGET_LIST" ] && [[ "$TARGET_LIST" =~ "$artifact_target" ]]; then
 		echo "Combining ${artifact_target}"
 
+		EXTRACT_TEMP_DIR_TARGET="${EXTRACT_TEMP_DIR}/${artifact_target}"
+		ARTIFACT_SRC_DIR_TARGET="${ACTION_ARTIFACT_DIR}/${artifact_target}"
+
+		# Create Temporary extraction directory
+		mkdir -p "${EXTRACT_TEMP_DIR_TARGET}"
+
 		# Unpack archive
-		tar xf "${ACTION_ARTIFACT_DIR}/${artifact_target}/output.tar.xz" -C "${ACTION_ARTIFACT_DIR}/${artifact_target}"
-		rm "${ACTION_ARTIFACT_DIR}/${artifact_target}/output.tar.xz"
+		tar xf "${ARTIFACT_SRC_DIR_TARGET}/output.tar.xz" -C "${EXTRACT_TEMP_DIR_TARGET}"
 
 		# Combine targets
-		rsync -a ${ACTION_ARTIFACT_DIR}/${artifact_target}/* "$ARTIFACT_OUT_DIR"
+		rsync -a ${EXTRACT_TEMP_DIR_TARGET}/* "$ARTIFACT_OUT_DIR"
+
+		# Remove temporary extraction directory
+		rm -rf "${EXTRACT_TEMP_DIR_TARGET}"
+
+		# Delete artifacts if enabled
+		if [ "${ACTION_DELETE_COMBINED}" -eq "1" ]; then
+			rm -rf "${ARTIFACT_SRC_DIR_TARGET}"
+		fi
 	else
 		echo "Skipping ${artifact_target}"
 	fi
-	rm -rf "${ACTION_ARTIFACT_DIR}/${artifact_target}"
 done
 
-# Remove all artifacts
-rm -rf "${ACTION_ARTIFACT_DIR}/*"
-
 # Move combined artifacts to artifact directory
-mv "$ARTIFACT_OUT_DIR/output" "$ACTION_ARTIFACT_DIR"
+mv "$ARTIFACT_OUT_DIR/output" "$ACTION_OUTPUT_DIR"
+
+# Remove temporary directory
+rm -rf "$EXTRACT_TEMP_DIR"

@@ -143,18 +143,6 @@ jobs:
         with:
           path: "gluon-gha-data/gluon-output"
 
-      - name: Print Output Directory structure
-        run: tree gluon-gha-data/gluon-output
-
-      - name: Combine Build output
-        uses: ./.github/actions/build-combine
-        with:
-          workdir: "gluon-gha-data/gluon-output"
-          targets: ${{ needs.targets.outputs.targets }}
-
-      - name: Print Output Directory structure
-        run: tree gluon-gha-data/gluon-output
-
       - name: Clone Gluon
         uses: actions/checkout@v3
         with:
@@ -171,8 +159,12 @@ jobs:
       - name: Restore OpenWrt
         run: tar xf gluon-gha-data/openwrt/openwrt.tar.xz -C gluon-gha-data/gluon
 
-      - name: Move Gluon output directory
-        run: mv gluon-gha-data/gluon-output/output gluon-gha-data/gluon
+      - name: Combine Build output
+        uses: ./.github/actions/build-combine
+        with:
+          artifact-dir: "gluon-gha-data/gluon-output"
+          output-dir: "gluon-gha-data/gluon"
+          targets: ${{ needs.targets.outputs.targets }}
 
       - name: Gluon Update
         uses: ./.github/actions/build
@@ -261,17 +253,18 @@ jobs:
       - name: Print Output Directory structure
         run: tree gluon-gha-data/artifact-download
       
-      - name: Save Manifest archive
-        run: cp gluon-gha-data/artifact-download/manifest-signed/manifest.tar.xz gluon-gha-data/manifest.tar.xz
+      - name: Create Directory to store Gluon output into
+        run: mkdir gluon-gha-data/gluon-output
 
       - name: Combine Build output
         uses: ./.github/actions/build-combine
         with:
-          workdir: "gluon-gha-data/artifact-download"
+          artifact-dir: "gluon-gha-data/artifact-download"
+          output-dir: "gluon-gha-data/gluon-output"
           targets: ${{ needs.targets.outputs.targets }}
       
       - name: Extract Manifest
-        run: tar xf gluon-gha-data/manifest.tar.xz -C gluon-gha-data/artifact-download/output/images/sysupgrade
+        run: tar xf gluon-gha-data/artifact-download/manifest-signed/manifest.tar.xz -C gluon-gha-data/gluon-output/output/images/sysupgrade
       
       - name: Show Directory structure
-        run: tree gluon-gha-data/artifact-download 
+        run: tree gluon-gha-data/gluon-output 
