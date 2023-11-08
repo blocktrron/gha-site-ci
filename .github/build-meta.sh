@@ -37,7 +37,7 @@ if [ "$GITHUB_REF_TYPE" = "branch" ]; then
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="testing"
 		MANIFEST_TESTING="1"
-	elif [[ "$GITHUB_REF_NAME" =~ $RELEASE_BRANCH_RE ]]; then; then
+	elif [[ "$GITHUB_REF_NAME" =~ $RELEASE_BRANCH_RE ]]; then
 		# Push to release branch - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="stable"
