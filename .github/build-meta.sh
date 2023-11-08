@@ -56,12 +56,14 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="testing"
 		MANIFEST_TESTING="1"
+		# We don't set RELEASE_VERSION here, we use the site-default. For now.
 	else
 		# Stable release - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="stable"
 		MANIFEST_STABLE="1"
 		MANIFEST_BETA="1"
+		RELEASE_VERSION="$GITHUB_REF_NAME"
 	fi
 else
 	echo "Unknown ref type $GITHUB_REF_TYPE"
