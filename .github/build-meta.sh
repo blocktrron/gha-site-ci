@@ -15,6 +15,9 @@ MANIFEST_STABLE="0"
 MANIFEST_BETA="0"
 MANIFEST_TESTING="0"
 
+echo "GitHub Ref-Type: $GITHUB_REF_TYPE"
+echo "GitHub Ref-Name: $GITHUB_REF_NAME"
+
 # Determine Autoupdater Branch to use
 if [ "$GITHUB_REF_TYPE" = "branch" ]; then
 	# Don't generate manifest on push
