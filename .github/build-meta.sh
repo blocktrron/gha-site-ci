@@ -4,6 +4,9 @@ set -euxo pipefail
 
 SCRIPT_DIR="$(dirname "$0")"
 
+# Release Branch regex
+RELEASE_BRANCH_RE="[2-9]\.[0-9]\.x"
+
 # Get Gluon version information
 GLUON_REPOSITORY="$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")"
 GLUON_COMMIT="$(jq -r -e .gluon.commit "$SCRIPT_DIR/build-info.json")"
@@ -34,7 +37,7 @@ if [ "$GITHUB_REF_TYPE" = "branch" ]; then
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="testing"
 		MANIFEST_TESTING="1"
-	elif [ -n "${GITHUB_REF_NAME%%v*}" ]; then
+	elif [[ "$GITHUB_REF_NAME" =~ $RELEASE_BRANCH_RE ]]; then; then
 		# Push to release branch - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="stable"
