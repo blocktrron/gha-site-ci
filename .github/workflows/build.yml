@@ -231,7 +231,7 @@ jobs:
         run: mkdir gluon-gha-data/artifact-out
 
       - name: Pack Manifest
-        run: find ./gluon-gha-data/gluon/output/images/sysupgrade -name "*.manifest" | tar cJf gluon-gha-data/artifact-out/manifest.tar.xz -T -
+        run: find ./gluon-gha-data/gluon/output/images/sysupgrade -maxdepth 1 -name "*.manifest" -exec basename {} \ | tar cJf gluon-gha-data/artifact-out/manifest.tar.xz -T -
 
       - name: Archive output
         uses: actions/upload-artifact@v3
