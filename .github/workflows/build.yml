@@ -4,6 +4,7 @@ on: [push]
 jobs:
   build-meta:
     outputs:
+      container-version: ${{ steps.build-metadata.outputs.container-version }}
       release-version: ${{ steps.build-metadata.outputs.release-version }}
       autoupdater-enabled: ${{ steps.build-metadata.outputs.autoupdater-enabled }}
       autoupdater-branch: ${{ steps.build-metadata.outputs.autoupdater-branch }}
@@ -61,6 +62,7 @@ jobs:
         uses: ./.github/actions/tools
         id: build-host-tools
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-path: "gluon-gha-data/openwrt"
 
@@ -107,6 +109,7 @@ jobs:
         uses: ./.github/actions/build
         id: update-gluon
         with: 
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           hardware-target: ath79-generic
           make-target: update
@@ -115,6 +118,7 @@ jobs:
         uses: ./.github/actions/build
         id: build-gluon
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           hardware-target: ${{ matrix.target }}
           broken: "1"
@@ -167,6 +171,7 @@ jobs:
         uses: ./.github/actions/build
         id: update-gluon
         with: 
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           make-target: update
 
@@ -174,6 +179,7 @@ jobs:
         uses: ./.github/actions/build
         if: ${{ needs.build-meta.outputs.manifest-stable != '0' }}
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           make-target: manifest
           autoupdater-branch: stable
@@ -184,6 +190,7 @@ jobs:
         uses: ./.github/actions/build
         if: ${{ needs.build-meta.outputs.manifest-beta != '0' }}
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           make-target: manifest
           autoupdater-branch: beta
@@ -194,6 +201,7 @@ jobs:
         uses: ./.github/actions/build
         if: ${{ needs.build-meta.outputs.manifest-testing != '0' }}
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           make-target: manifest
           autoupdater-branch: testing
@@ -204,6 +212,7 @@ jobs:
         uses: ./.github/actions/sign
         if: ${{ needs.build-meta.outputs.manifest-stable != '0' }}
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
           signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
@@ -213,6 +222,7 @@ jobs:
         uses: ./.github/actions/sign
         if: ${{ needs.build-meta.outputs.manifest-beta != '0' }}
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
           signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
@@ -222,6 +232,7 @@ jobs:
         uses: ./.github/actions/sign
         if: ${{ needs.build-meta.outputs.manifest-testing != '0' }}
         with:
+          container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
           signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60

@@ -5,8 +5,11 @@ set -euxo pipefail
 SCRIPT_DIR="$(dirname "$0")"
 
 # Get Gluon version information
-GLUON_REPOSITORY=$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")
-GLUON_COMMIT=$(jq -r -e .gluon.commit "$SCRIPT_DIR/build-info.json")
+GLUON_REPOSITORY="$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")"
+GLUON_COMMIT="$(jq -r -e .gluon.commit "$SCRIPT_DIR/build-info.json")"
+
+# Get Container version information
+CONTAINER_VERSION="$(jq -r -e .container.version "$SCRIPT_DIR/build-info.json")"
 
 DEPLOY=0
 DEFAULT_RELEASE_VERSION="$(make --no-print-directory -C $SCRIPT_DIR -f ci-build.mk version)"
@@ -65,6 +68,9 @@ fi
 # Determine Version to use
 RELEASE_VERSION="${RELEASE_VERSION:-$DEFAULT_RELEASE_VERSION}"
 
+echo "" > "$GITHUB_OUTPUT"
+
+echo "container-version=$CONTAINER_VERSION" >> "$GITHUB_OUTPUT"
 echo "gluon-repository=$GLUON_REPOSITORY" >> "$GITHUB_OUTPUT"
 echo "gluon-commit=$GLUON_COMMIT" >> "$GITHUB_OUTPUT"
 echo "release-version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
