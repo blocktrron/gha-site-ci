@@ -53,14 +53,13 @@ if [ "$GITHUB_REF_TYPE" = "branch" ]; then
 		AUTOUPDATER_BRANCH="testing"
 	fi
 elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
-	DEPLOY=1
-
 	if [[ "$GITHUB_REF_NAME" =~ $TESTING_TAG_RE ]]; then
 		# Testing release - autoupdater Branch is testing and enabled
 		AUTOUPDATER_ENABLED=1
 		AUTOUPDATER_BRANCH="testing"
 		MANIFEST_TESTING="1"
 		RELEASE_VERSION="$(echo "$GITHUB_REF_NAME" | tr '-' '~')"
+		DEPLOY=1
 	elif [[ "$GITHUB_REF_NAME" =~ $RELEASE_TAG_RE ]]; then
 		# Stable release - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED=1
@@ -68,6 +67,7 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 		MANIFEST_STABLE="1"
 		MANIFEST_BETA="1"
 		RELEASE_VERSION="$GITHUB_REF_NAME"
+		DEPLOY=1
 	else
 		# Unknown release - Disable autoupdater
 		AUTOUPDATER_ENABLED=0
