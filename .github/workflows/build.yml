@@ -180,6 +180,7 @@ jobs:
           gluon-path: "gluon-gha-data/gluon"
           make-target: manifest
           autoupdater-branch: stable
+          release: ${{ needs.build-meta.outputs.release-version }}
           priority: 1
 
       - name: Manifest (Beta)
@@ -189,6 +190,7 @@ jobs:
           gluon-path: "gluon-gha-data/gluon"
           make-target: manifest
           autoupdater-branch: beta
+          release: ${{ needs.build-meta.outputs.release-version }}
           priority: 1
 
       - name: Manifest (Testing)
@@ -198,6 +200,7 @@ jobs:
           gluon-path: "gluon-gha-data/gluon"
           make-target: manifest
           autoupdater-branch: testing
+          release: ${{ needs.build-meta.outputs.release-version }}
           priority: 1
       
       - name: Sign manifest (Stable)
