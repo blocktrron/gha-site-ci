@@ -57,7 +57,7 @@ for artifact_target in $ARTIFACT_NAMES ; do
 done
 
 # Move combined artifacts to artifact directory
-mv "$ARTIFACT_OUT_DIR/*" "$ACTION_OUTPUT_DIR"
+find "$ARTIFACT_OUT_DIR" -mindepth 1 -maxdepth 1 -exec mv -t "$ACTION_OUTPUT_DIR" {} +
 
 # Remove temporary directory
 rm -rf "$EXTRACT_TEMP_DIR"
