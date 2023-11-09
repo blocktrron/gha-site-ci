@@ -30,17 +30,22 @@ for artifact_target in $ARTIFACT_NAMES ; do
 		EXTRACT_TEMP_DIR_TARGET="${EXTRACT_TEMP_DIR}/${artifact_target}"
 		ARTIFACT_SRC_DIR_TARGET="${ACTION_ARTIFACT_DIR}/${artifact_target}"
 
-		# Create Temporary extraction directory
-		mkdir -p "${EXTRACT_TEMP_DIR_TARGET}"
+		if [[ "$ACTION_KEEP_PACKED" != "1" ]]; then
+			# Create Temporary extraction directory
+			mkdir -p "${EXTRACT_TEMP_DIR_TARGET}"
 
-		# Unpack archive
-		tar xf "${ARTIFACT_SRC_DIR_TARGET}/output.tar.xz" -C "${EXTRACT_TEMP_DIR_TARGET}"
+			# Unpack archive
+			tar xf "${ARTIFACT_SRC_DIR_TARGET}/output.tar.xz" -C "${EXTRACT_TEMP_DIR_TARGET}"
 
-		# Combine targets
-		rsync -a ${EXTRACT_TEMP_DIR_TARGET}/* "$ARTIFACT_OUT_DIR"
+			# Combine targets
+			rsync -a ${EXTRACT_TEMP_DIR_TARGET}/* "$ARTIFACT_OUT_DIR"
 
-		# Remove temporary extraction directory
-		rm -rf "${EXTRACT_TEMP_DIR_TARGET}"
+			# Remove temporary extraction directory
+			rm -rf "${EXTRACT_TEMP_DIR_TARGET}"
+		else
+			# Copy and rename archive
+			cp "${ARTIFACT_SRC_DIR_TARGET}/output.tar.xz" "${ARTIFACT_OUT_DIR}/${artifact_target}.tar.xz}"
+		fi
 
 		# Delete artifacts if enabled
 		if [ "${ACTION_DELETE_COMBINED}" -eq "1" ]; then
@@ -52,7 +57,7 @@ for artifact_target in $ARTIFACT_NAMES ; do
 done
 
 # Move combined artifacts to artifact directory
-mv "$ARTIFACT_OUT_DIR/output" "$ACTION_OUTPUT_DIR"
+mv "$ARTIFACT_OUT_DIR/*" "$ACTION_OUTPUT_DIR"
 
 # Remove temporary directory
 rm -rf "$EXTRACT_TEMP_DIR"
