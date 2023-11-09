@@ -25,7 +25,10 @@ else
     RELEASE_NAME="$(make --no-print-directory -C $SCRIPT_DIR -f ci-build.mk version)"
 fi
 
-echo "Proceed to tag firmware release for '$RELEASE_NAME'? (y/n)"
+# Replace ~ with - in testing tags
+TAG_NAME="${RELEASE_NAME//\~/\-}"
+
+echo "Proceed to tag firmware release for '$RELEASE_NAME' (Tag: '$TAG_NAME')? (y/n)"
 
 read -n 1 -r
 
@@ -36,6 +39,6 @@ else
     exit 1
 fi
 
-git tag "$RELEASE_NAME"
+git tag "$TAG_NAME"
 
 echo "Tag was created"
