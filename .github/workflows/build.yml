@@ -170,7 +170,7 @@ jobs:
         uses: ./.github/actions/build-combine
         with:
           artifact-dir: "gluon-gha-data/gluon-output"
-          output-dir: "gluon-gha-data/gluon"
+          output-dir: "gluon-gha-data/gluon/output"
           targets: ${{ needs.targets.outputs.targets }}
 
       - name: Gluon Update
@@ -278,7 +278,7 @@ jobs:
         uses: ./.github/actions/build-combine
         with:
           artifact-dir: "gluon-gha-data/artifact-download"
-          output-dir: "gluon-gha-data/gluon-output"
+          output-dir: "gluon-gha-data/gluon-output/output"
           targets: ${{ needs.targets.outputs.targets }}
       
       - name: Extract Manifest
@@ -286,3 +286,43 @@ jobs:
       
       - name: Show Directory structure
         run: tree gluon-gha-data/gluon-output 
+
+
+  create-release:
+    needs: [ build, build-meta, targets, manifest ]
+    runs-on: ubuntu-latest
+    if: ${{ needs.build-meta.outputs.create-release != '0' }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v3
+        with:
+          path: "gluon-gha-data/artifact-download"
+      
+      - name: Create Directory to store Gluon output into
+        run: mkdir gluon-gha-data/gluon-output
+
+      - name: Download target Artifacts
+        uses: ./.github/actions/build-combine
+        with:
+          artifact-dir: "gluon-gha-data/artifact-download"
+          output-dir: "gluon-gha-data/release-artifacts"
+          targets: ${{ needs.targets.outputs.targets }}
+          keep-packed: 1
+            
+      - name: Move manifest archive
+        run: mv gluon-gha-data/artifact-download/manifest-signed/manifest.tar.xz gluon-gha-data/release-artifacts/manifest.tar.xz
+      
+      - name: Show Directory structure
+        run: tree gluon-gha-data/artifact-download
+      
+      - name: Show File sizes
+        run: du -sh gluon-gha-data/release-artifacts/*
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            gluon-gha-data/release-artifacts/*
