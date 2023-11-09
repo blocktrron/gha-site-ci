@@ -7,7 +7,7 @@ inputs:
   output-dir:
     description: 'Path to store the combined output directory into'
     required: true
-  combine-archives:
+  keep-packed:
     description: 'Instead of extracting and combining the output folders, keep the archive packed (Default: 0)'
     default: 0
   delete-combined:
@@ -23,7 +23,7 @@ runs:
       shell: bash
       env:
         ACTION_ARTIFACT_DIR: ${{ inputs.artifact-dir }}
-        ACTION_COMBINE_ARCHIVES: ${{ inputs.combine-archives }}
         ACTION_DELETE_COMBINED: ${{ inputs.delete-combined }}
+        ACTION_KEEP_PACKED: ${{ inputs.keep-packed }}
         ACTION_OUTPUT_DIR: ${{ inputs.output-dir }}
         ACTION_TARGETS: ${{ inputs.targets }}
