@@ -13,6 +13,9 @@ DEPLOY="0"
 # Don't release by default. Enable for release and testing builds.
 CREATE_RELEASE="0"
 
+# Target whitelist
+TARGET_WHITELIST="$(jq -r -e '.build.targets | join(" ")' "$SCRIPT_DIR/build-info.json")"
+
 # Release Branch regex
 RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x"
 # Regex for testing firmware tag
@@ -118,6 +121,7 @@ echo "manifest-testing=$MANIFEST_TESTING" >> "$GITHUB_OUTPUT"
 echo "sign-manifest=$SIGN_MANIFEST" >> "$GITHUB_OUTPUT"
 echo "deploy=$DEPLOY" >> "$GITHUB_OUTPUT"
 echo "create-release=$CREATE_RELEASE" >> "$GITHUB_OUTPUT"
+echo "target-whitelist=$TARGET_WHITELIST" >> "$GITHUB_OUTPUT"
 
 cat "$GITHUB_OUTPUT"
 

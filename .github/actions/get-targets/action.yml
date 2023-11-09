@@ -4,6 +4,9 @@ inputs:
   gluon-path:
     description: 'Path to Gluon repository'
     required: true
+  whitelist:
+    description: 'Space-separated list of target whitelist'
+    required: false
   broken:
     description: 'Determines if BROKEN targets should be returned (Default: 0)'
     default: 0
@@ -14,7 +17,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - run: bash ${{ github.action_path }}/entrypoint.sh $GITHUB_WORKSPACE/${{ inputs.gluon-path }} > /tmp/targets.json
+    - run: bash ${{ github.action_path }}/entrypoint.sh $GITHUB_WORKSPACE/${{ inputs.gluon-path }} "${{ inputs.whitelist }}" > /tmp/targets.json
       shell: bash
       env:
         BROKEN: ${{ inputs.broken }}

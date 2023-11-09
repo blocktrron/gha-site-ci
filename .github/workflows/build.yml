@@ -16,6 +16,7 @@ jobs:
       manifest-testing: ${{ steps.build-metadata.outputs.manifest-testing }}
       sign-manifest: ${{ steps.build-metadata.outputs.sign-manifest }}
       create-release: ${{ steps.build-metadata.outputs.create-release }}
+      target-whitelist: ${{ steps.build-metadata.outputs.target-whitelist }}}
     runs-on: ubuntu-latest
     name: Determine build-meta
     steps:
@@ -47,6 +48,7 @@ jobs:
         with:
           gluon-path: "gluon-gha-data/gluon"
           broken: ${{ needs.build-meta.outputs.broken }}
+          whitelist: ${{ needs.build-meta.outputs.target-whitelist }}
 
 
   host-tools:

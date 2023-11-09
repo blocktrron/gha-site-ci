@@ -5,5 +5,13 @@
     },
     "container": {
         "version": "master"
+    },
+    "build": {
+        "targets": [
+            "ath79-generic",
+            "ath79-nand",
+            "ipq40xx-generic",
+            "mediatek-filogic"
+        ]
     }
 }
