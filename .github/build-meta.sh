@@ -99,6 +99,12 @@ else
 	exit 1
 fi
 
+# Ensure we don't {sign,deploy,release} on pull requests
+if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+	DEPLOY="0"
+	CREATE_RELEASE="0"
+	SIGN_MANIFEST="0"
+fi
 
 # Determine Version to use
 RELEASE_VERSION="${RELEASE_VERSION:-$DEFAULT_RELEASE_VERSION}"
