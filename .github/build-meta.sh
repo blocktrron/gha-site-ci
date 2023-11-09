@@ -10,7 +10,7 @@ BROKEN="1"
 # Don't deploy by default. Enable for release and testing builds.
 DEPLOY="0"
 
-# Don't release by default. Enable for release and testing builds.
+# Don't release by default. Enable for tags.
 CREATE_RELEASE="0"
 
 # Target whitelist
@@ -75,7 +75,6 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 
 		RELEASE_VERSION="$(echo "$GITHUB_REF_NAME" | tr '-' '~')"
 		DEPLOY="1"
-		CREATE_RELEASE="1"
 	elif [[ "$GITHUB_REF_NAME" =~ $RELEASE_TAG_RE ]]; then
 		# Stable release - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED="1"
@@ -88,20 +87,18 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 		RELEASE_VERSION="$GITHUB_REF_NAME"
 		BROKEN="0"
 		DEPLOY="1"
-		CREATE_RELEASE="1"
 	else
 		# Unknown release - Disable autoupdater
 		AUTOUPDATER_ENABLED="0"
 		AUTOUPDATER_BRANCH="testing"
 	fi
+
+	CREATE_RELEASE="1"
 else
 	echo "Unknown ref type $GITHUB_REF_TYPE"
 	exit 1
 fi
 
-# TODO: Remove hack
-DEPLOY="1"
-CREATE_RELEASE="1"
 
 # Determine Version to use
 RELEASE_VERSION="${RELEASE_VERSION:-$DEFAULT_RELEASE_VERSION}"
