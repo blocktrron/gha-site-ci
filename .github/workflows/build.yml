@@ -221,7 +221,7 @@ jobs:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
-          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
+          signing-key: ${{ secrets.signing_key }}
           manifest-branch: "stable"
 
       - name: Sign manifest (Beta)
@@ -231,7 +231,7 @@ jobs:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
-          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
+          signing-key: ${{ secrets.signing_key }}
           manifest-branch: "beta"
 
       - name: Sign manifest (Testing)
@@ -241,7 +241,7 @@ jobs:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-dir: gluon-gha-data/gluon/output
-          signing-key: 50b2b068ed87c0c3456e337292af8f9dd05343501894c9501025bb7f1a625d60
+          signing-key: ${{ secrets.signing_key }}
           manifest-branch: "testing"
 
       - name: Create Artifact Directory
@@ -286,6 +286,12 @@ jobs:
       
       - name: Show Directory structure
         run: tree gluon-gha-data/gluon-output 
+      
+      - name: Save SSH Key for deployment
+        run: mkdir -p ~/.ssh && echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+      
+      - name: Check SSH-Key
+        run: cat ~/.ssh/deploy_key
 
 
   create-release:
