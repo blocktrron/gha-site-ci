@@ -10,6 +10,9 @@ BROKEN="1"
 # Don't deploy by default. Enable for release and testing builds.
 DEPLOY="0"
 
+# Don't release by default. Enable for release and testing builds.
+CREATE_RELEASE="0"
+
 # Release Branch regex
 RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x"
 # Regex for testing firmware tag
@@ -69,6 +72,7 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 
 		RELEASE_VERSION="$(echo "$GITHUB_REF_NAME" | tr '-' '~')"
 		DEPLOY="1"
+		CREATE_RELEASE="1"
 	elif [[ "$GITHUB_REF_NAME" =~ $RELEASE_TAG_RE ]]; then
 		# Stable release - autoupdater Branch is stable and enabled
 		AUTOUPDATER_ENABLED="1"
@@ -81,6 +85,7 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 		RELEASE_VERSION="$GITHUB_REF_NAME"
 		BROKEN="0"
 		DEPLOY="1"
+		CREATE_RELEASE="1"
 	else
 		# Unknown release - Disable autoupdater
 		AUTOUPDATER_ENABLED="0"
@@ -111,6 +116,7 @@ echo "manifest-beta=$MANIFEST_BETA" >> "$GITHUB_OUTPUT"
 echo "manifest-testing=$MANIFEST_TESTING" >> "$GITHUB_OUTPUT"
 echo "sign-manifest=$SIGN_MANIFEST" >> "$GITHUB_OUTPUT"
 echo "deploy=$DEPLOY" >> "$GITHUB_OUTPUT"
+echo "create-release=$CREATE_RELEASE" >> "$GITHUB_OUTPUT"
 
 cat "$GITHUB_OUTPUT"
 
