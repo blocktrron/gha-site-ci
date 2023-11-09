@@ -98,6 +98,7 @@ fi
 
 # TODO: Remove hack
 DEPLOY="1"
+CREATE_RELEASE="1"
 
 # Determine Version to use
 RELEASE_VERSION="${RELEASE_VERSION:-$DEFAULT_RELEASE_VERSION}"
