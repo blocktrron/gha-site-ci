@@ -21,7 +21,7 @@ done
 ARTIFACT_OUT_DIR="$RUNNER_TEMP/output"
 EXTRACT_TEMP_DIR="$RUNNER_TEMP/extract"
 
-mkdir "$ARTIFACT_OUT_DIR"
+mkdir -p "$ARTIFACT_OUT_DIR"
 for artifact_target in $ARTIFACT_NAMES ; do
 	# Check if artifact in list. Only delete otherwise.
 	if [ -n "$TARGET_LIST" ] && [[ "$TARGET_LIST" =~ "$artifact_target" ]]; then
@@ -44,7 +44,7 @@ for artifact_target in $ARTIFACT_NAMES ; do
 			rm -rf "${EXTRACT_TEMP_DIR_TARGET}"
 		else
 			# Copy and rename archive
-			cp "${ARTIFACT_SRC_DIR_TARGET}/output.tar.xz" "${ARTIFACT_OUT_DIR}/${artifact_target}.tar.xz}"
+			cp "${ARTIFACT_SRC_DIR_TARGET}/output.tar.xz" "${ARTIFACT_OUT_DIR}/${artifact_target}.tar.xz"
 		fi
 
 		# Delete artifacts if enabled
