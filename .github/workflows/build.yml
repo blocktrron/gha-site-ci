@@ -172,6 +172,12 @@ jobs:
           artifact-dir: "gluon-gha-data/gluon-output"
           output-dir: "gluon-gha-data/gluon/output"
           targets: ${{ needs.targets.outputs.targets }}
+        
+      - name: Structure
+        run: tree gluon-gha-data/gluon
+
+      - name: Structure
+        run: tree gluon-gha-data/gluon-output
 
       - name: Gluon Update
         uses: ./.github/actions/build
@@ -246,9 +252,15 @@ jobs:
 
       - name: Create Artifact Directory
         run: mkdir gluon-gha-data/artifact-out
+      
+      - name: Structure
+        run: tree gluon-gha-data/gluon
 
       - name: Pack Manifest
         run: find ./gluon-gha-data/gluon/output/images/sysupgrade -maxdepth 1 -name "*.manifest" -exec basename {} \; | tar cJf gluon-gha-data/artifact-out/manifest.tar.xz -C gluon-gha-data/gluon/output/images/sysupgrade -T -
+
+      - name: Structure
+        run: tree gluon-gha-data/artifact-out
 
       - name: Archive output
         uses: actions/upload-artifact@v3
