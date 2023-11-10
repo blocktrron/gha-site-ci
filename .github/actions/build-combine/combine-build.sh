@@ -60,7 +60,9 @@ tree "$ARTIFACT_OUT_DIR"
 
 # Move combined artifacts to artifact directory
 mkdir -p "$ACTION_OUTPUT_DIR"
-find "$ARTIFACT_OUT_DIR" -mindepth 1 -maxdepth 1 -exec mv -t "$ACTION_OUTPUT_DIR" {} +
+mv "$ARTIFACT_OUT_DIR/images" "$ACTION_OUTPUT_DIR"
+mv "$ARTIFACT_OUT_DIR/packages" "$ACTION_OUTPUT_DIR"
+mv "$ARTIFACT_OUT_DIR/debug" "$ACTION_OUTPUT_DIR"
 
 tree "$ACTION_OUTPUT_DIR"
 
