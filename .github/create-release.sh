@@ -51,14 +51,7 @@ TAG_NAME="${RELEASE_NAME//\~/\-}"
 
 check_input_y "Proceed to tag firmware release for '$RELEASE_NAME' (Tag: '$TAG_NAME')?"
 
-read -n 1 -r
-
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Proceeding to tag firmware release with $RELEASE_NAME"
-else
-    echo "Aborting"
-    exit 1
-fi
+echo "Proceeding to tag firmware release with $RELEASE_NAME"
 
 git tag "$TAG_NAME"
 
