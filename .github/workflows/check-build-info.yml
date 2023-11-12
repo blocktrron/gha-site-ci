@@ -16,4 +16,4 @@ jobs:
       - name: Install Validator
         run: sudo apt-get update && sudo apt-get install -y python3-demjson
       - name: Run validation
-        run: jsonlint-py -v "$BUILD_INFO"
+        run: jsonlint-py3 -v "$BUILD_INFO"
