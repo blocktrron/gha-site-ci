@@ -11,7 +11,19 @@
             "ath79-generic",
             "ath79-nand",
             "ipq40xx-generic",
-            "mediatek-filogic"
+            "ipq806x-generic",
+            "lantiq-xrx200",
+            "lantiq-xway",
+            "ipq806x-generic",
+            "mediatek-filogic",
+            "mpc85xx-p1010",
+            "mpc85xx-p1020",
+            "ramips-mt76x8",
+            "ramips-mt7620",
+            "ramips-mt7621",
+            "rockchip-armv8",
+            "x86-generic",
+            "x86-64"
         ]
     }
 }
