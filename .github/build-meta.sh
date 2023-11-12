@@ -20,6 +20,8 @@ TARGET_WHITELIST="$(jq -r -e '.build.targets | join(" ")' "$SCRIPT_DIR/build-inf
 RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x$"
 # Regex for testing firmware tag
 TESTING_TAG_RE="[2-9].[0-9]-[0-9]{8}$"
+# Regex for custom testing firmware tag
+CUSTOM_TESTING_TAG_RE="[2-9].[0-9]-[0-9]{8}"
 # Regex for release firmware tag
 RELEASE_TAG_RE="[2-9].[0-9].[0-9]$"
 
@@ -91,6 +93,13 @@ elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
 		# Unknown release - Disable autoupdater
 		AUTOUPDATER_ENABLED="0"
 		AUTOUPDATER_BRANCH="testing"
+
+		if [[ "$GITHUB_REF_NAME" =~ $CUSTOM_TESTING_TAG_RE ]]; then
+			# Custom testing tag
+			
+			# Replace first occurence of - with ~ of GITHUB_REF_NAME for RELEASE_VERSION
+			RELEASE_VERSION="$(echo "$GITHUB_REF_NAME" | sed 's/-/~/')"
+		fi
 	fi
 
 	CREATE_RELEASE="1"
