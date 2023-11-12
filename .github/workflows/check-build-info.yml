@@ -1,0 +1,19 @@
+name: "Validate build-info JSON"
+
+on:
+  push:
+  pull_request:
+
+env:
+  BUILD_INFO: ${{ github.workspace }}/.github/build-info.json
+
+jobs:
+  validate-json:
+    name: "Validate JSON"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Validator
+        run: apt-get update && apt-get install -y python-demjson
+      - name: Run validation
+        run: jsonlint-py -v "$BUILD_INFO"
