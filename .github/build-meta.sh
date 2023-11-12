@@ -17,7 +17,7 @@ CREATE_RELEASE="0"
 TARGET_WHITELIST="$(jq -r -e '.build.targets | join(" ")' "$SCRIPT_DIR/build-info.json")"
 
 # Release Branch regex
-RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x"
+RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x$"
 # Regex for testing firmware tag
 TESTING_TAG_RE="[2-9].[0-9]-[0-9]{8}$"
 # Regex for release firmware tag
