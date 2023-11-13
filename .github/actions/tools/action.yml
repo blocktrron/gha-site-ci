@@ -55,7 +55,7 @@ runs:
       shell: bash
     - name: Save Cache
       id: save-cache-tools
-      if: inputs.save-cache == 'true'
+      if: inputs.save-cache == 'true' && steps.restore-cache-tools.outputs.cache-hit != 'true'
       uses: actions/cache/save@v3
       with:
         path: ${{ inputs.output-path }}
