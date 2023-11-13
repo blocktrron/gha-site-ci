@@ -71,6 +71,8 @@ jobs:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
           output-path: "gluon-gha-data/openwrt"
+          restore-cache: true
+          save-cache: ${{ github.ref_type != 'tag' }}
 
       - name: Archive build output
         uses: actions/upload-artifact@v3

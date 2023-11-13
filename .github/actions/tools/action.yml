@@ -10,8 +10,11 @@ inputs:
   container-version:
     description: 'Container version to use'
     default: 'master'
-  use-cache:
-    description: 'Restore and save generated host-tools to GitHub actions cache'
+  restore-cache:
+    description: 'Restore generated host-tools from GitHub actions cache'
+    default: true
+  save-cache:
+    description: 'Save generated host-tools to GitHub actions cache'
     default: true
 
 runs:
@@ -21,20 +24,20 @@ runs:
       id: cache-key
       run: echo "cache-key=$(bash $GITHUB_ACTION_PATH/cache-key.sh ${GITHUB_WORKSPACE}/${{ inputs.gluon-path }})" >> "$GITHUB_OUTPUT"
       shell: bash
-    - name: Cache Tools
-      id: cache-tools
-      if: inputs.use-cache == 'true'
-      uses: actions/cache@v3
+    - name: Restore Cache
+      id: restore-cache-tools
+      if: inputs.restore-cache == 'true'
+      uses: actions/cache/restore@v3
       with:
         path: ${{ inputs.output-path }}
-        key: ${{ steps.cache-key.outputs.cache-key }}-openwrt-tree-full
+        key: openwrt-${{ steps.cache-key.outputs.cache-key }}
     - run: docker build --build-arg CONTAINER --build-arg VERSION -t sdk $GITHUB_ACTION_PATH
-      if: steps.cache-tools.outputs.cache-hit != 'true'
+      if: steps.restore-cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.container-version }}
       shell: bash
     - run: mkdir -p "${GITHUB_WORKSPACE}/${{ inputs.output-path }}"
-      if: steps.cache-tools.outputs.cache-hit != 'true'
+      if: steps.restore-cache-tools.outputs.cache-hit != 'true'
       shell: bash
     - run: |
         docker run --rm \
@@ -44,11 +47,19 @@ runs:
           --volume "${GITHUB_WORKSPACE}/$ACTION_OUTPUT_PATH:/gluon/artifacts" \
           --volume "${GITHUB_WORKSPACE}/$ACTION_GLUON_PATH:/gluon/gluon-repo" \
           sdk
-      if: steps.cache-tools.outputs.cache-hit != 'true'
+      if: steps.restore-cache-tools.outputs.cache-hit != 'true'
       env:
         VERSION: ${{ inputs.gluon-version }}
         ACTION_OUTPUT_PATH: ${{ inputs.output-path }}
         ACTION_GLUON_PATH: ${{ inputs.gluon-path }}
       shell: bash
+    - name: Save Cache
+      id: save-cache-tools
+      if: inputs.save-cache == 'true'
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ inputs.output-path }}
+        key: openwrt-${{ steps.cache-key.outputs.cache-key }}
+
 
 
