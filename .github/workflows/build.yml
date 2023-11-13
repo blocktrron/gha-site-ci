@@ -309,7 +309,7 @@ jobs:
 
       - name: Deploy Packages
         # ToDo: Remove 'ffda' site-code and move to build-meta
-        run: rsync -avzP "gluon-gha-data/gluon-output/output/packages/gluon-ffda-${{ needs.build-meta.outputs.release-version }}" "firmware@www1.darmstadt.freifunk.net:/srv/firmware/modules/"
+        run: rsync -avzP -e "ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" "gluon-gha-data/gluon-output/output/packages/gluon-ffda-${{ needs.build-meta.outputs.release-version }}" "firmware@www1.darmstadt.freifunk.net:/srv/firmware/modules/"
 
 
   create-release:
