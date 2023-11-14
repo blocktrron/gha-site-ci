@@ -305,7 +305,7 @@ jobs:
         run: mkdir -p ~/.ssh && echo "${{ secrets.GHA_FFDA_BUILD_DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
       
       - name: Deploy Images
-        run: rsync -avzP gluon-gha-data/gluon-output/output/images/{factory,sysupgrade,other} "firmware@www1.darmstadt.freifunk.net:/srv/firmware/images/${{ needs.build-meta.outputs.release-version }}/"
+        run: rsync -avzP -e "ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" gluon-gha-data/gluon-output/output/images/{factory,sysupgrade,other} "firmware@www1.darmstadt.freifunk.net:/srv/firmware/images/${{ needs.build-meta.outputs.release-version }}/"
 
       - name: Deploy Packages
         # ToDo: Remove 'ffda' site-code and move to build-meta
