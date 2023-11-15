@@ -123,24 +123,34 @@ fi
 # Determine Version to use
 RELEASE_VERSION="${RELEASE_VERSION:-$DEFAULT_RELEASE_VERSION}"
 
-echo "" > "$GITHUB_OUTPUT"
+# Write build-meta to dedicated file before appending GITHUB_OUTPUT.
+# This way, we can create an artifact for our build-meta to eventually upload to a release.
+BUILD_META_TMP_DIR="$(mktemp -d)"
+BUILD_META_OUTPUT="$BUILD_META_TMP_DIR/build-meta.txt"
+
+# Not the nicest way to do this, but it works.
+echo "build-meta-output=$BUILD_META_TMP_DIR" >> "$BUILD_META_OUTPUT"
 
 # shellcheck disable=SC2129
-echo "container-version=$CONTAINER_VERSION" >> "$GITHUB_OUTPUT"
-echo "gluon-repository=$GLUON_REPOSITORY" >> "$GITHUB_OUTPUT"
-echo "gluon-commit=$GLUON_COMMIT" >> "$GITHUB_OUTPUT"
-echo "release-version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
-echo "autoupdater-enabled=$AUTOUPDATER_ENABLED" >> "$GITHUB_OUTPUT"
-echo "autoupdater-branch=$AUTOUPDATER_BRANCH" >> "$GITHUB_OUTPUT"
-echo "broken=$BROKEN" >> "$GITHUB_OUTPUT"
-echo "manifest-stable=$MANIFEST_STABLE" >> "$GITHUB_OUTPUT"
-echo "manifest-beta=$MANIFEST_BETA" >> "$GITHUB_OUTPUT"
-echo "manifest-testing=$MANIFEST_TESTING" >> "$GITHUB_OUTPUT"
-echo "sign-manifest=$SIGN_MANIFEST" >> "$GITHUB_OUTPUT"
-echo "deploy=$DEPLOY" >> "$GITHUB_OUTPUT"
-echo "create-release=$CREATE_RELEASE" >> "$GITHUB_OUTPUT"
-echo "target-whitelist=$TARGET_WHITELIST" >> "$GITHUB_OUTPUT"
+echo "container-version=$CONTAINER_VERSION" >> "$BUILD_META_OUTPUT"
+echo "gluon-repository=$GLUON_REPOSITORY" >> "$BUILD_META_OUTPUT"
+echo "gluon-commit=$GLUON_COMMIT" >> "$BUILD_META_OUTPUT"
+echo "release-version=$RELEASE_VERSION" >> "$BUILD_META_OUTPUT"
+echo "autoupdater-enabled=$AUTOUPDATER_ENABLED" >> "$BUILD_META_OUTPUT"
+echo "autoupdater-branch=$AUTOUPDATER_BRANCH" >> "$BUILD_META_OUTPUT"
+echo "broken=$BROKEN" >> "$BUILD_META_OUTPUT"
+echo "manifest-stable=$MANIFEST_STABLE" >> "$BUILD_META_OUTPUT"
+echo "manifest-beta=$MANIFEST_BETA" >> "$BUILD_META_OUTPUT"
+echo "manifest-testing=$MANIFEST_TESTING" >> "$BUILD_META_OUTPUT"
+echo "sign-manifest=$SIGN_MANIFEST" >> "$BUILD_META_OUTPUT"
+echo "deploy=$DEPLOY" >> "$BUILD_META_OUTPUT"
+echo "create-release=$CREATE_RELEASE" >> "$BUILD_META_OUTPUT"
+echo "target-whitelist=$TARGET_WHITELIST" >> "$BUILD_META_OUTPUT"
 
+# Copy over to GITHUB_OUTPUT
+cat "$BUILD_META_OUTPUT" >> "$GITHUB_OUTPUT"
+
+# Display Output so we can conveniently check it from CI log viewer
 cat "$GITHUB_OUTPUT"
 
 exit 0

@@ -43,6 +43,12 @@ jobs:
       - name: Get build-metadata
         id: build-metadata
         run: bash .github/build-meta.sh
+      
+      - name: Create Artifact of build-meta
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-meta
+          path: ${{ steps.build-metadata.outputs.build-meta-output }}
 
 
   targets:
