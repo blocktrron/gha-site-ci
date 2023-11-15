@@ -389,6 +389,11 @@ jobs:
         run: |
           mv gluon-gha-data/artifact-download/manifest-signed/manifest.tar.xz
           gluon-gha-data/release-artifacts/manifest.tar.xz
+      
+      - name: Move manifest archive
+        run: |
+          mv gluon-gha-data/artifact-download/build-meta/build-meta.txt
+          gluon-gha-data/release-artifacts/build-meta.txt
 
       - name: Show File sizes
         run: du -sh gluon-gha-data/release-artifacts/*
