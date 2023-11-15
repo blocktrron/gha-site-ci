@@ -20,13 +20,13 @@ CREATE_RELEASE="0"
 TARGET_WHITELIST="$(jq -r -e '.build.targets | join(" ")' "$SCRIPT_DIR/build-info.json")"
 
 # Release Branch regex
-RELEASE_BRANCH_RE="v[2-9]\.[0-9]\.x$"
+RELEASE_BRANCH_RE="^v20[0-9]{2}\.[0-9]\.x$"
 # Regex for testing firmware tag
-TESTING_TAG_RE="[2-9].[0-9]-[0-9]{8}$"
+TESTING_TAG_RE="^[2-9].[0-9]-[0-9]{8}$"
 # Regex for custom testing firmware tag
-CUSTOM_TESTING_TAG_RE="[2-9].[0-9]-[0-9]{8}"
+CUSTOM_TESTING_TAG_RE="^[2-9].[0-9]-[0-9]{8}"
 # Regex for release firmware tag
-RELEASE_TAG_RE="[2-9].[0-9].[0-9]$"
+RELEASE_TAG_RE="^[2-9].[0-9].[0-9]$"
 
 # Get Gluon version information
 GLUON_REPOSITORY="$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")"
