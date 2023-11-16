@@ -128,10 +128,9 @@ RELEASE_VERSION="${RELEASE_VERSION:-$DEFAULT_RELEASE_VERSION}"
 BUILD_META_TMP_DIR="$(mktemp -d)"
 BUILD_META_OUTPUT="$BUILD_META_TMP_DIR/build-meta.txt"
 
+# shellcheck disable=SC2129
 # Not the nicest way to do this, but it works.
 echo "build-meta-output=$BUILD_META_TMP_DIR" >> "$BUILD_META_OUTPUT"
-
-# shellcheck disable=SC2129
 echo "container-version=$CONTAINER_VERSION" >> "$BUILD_META_OUTPUT"
 echo "gluon-repository=$GLUON_REPOSITORY" >> "$BUILD_META_OUTPUT"
 echo "gluon-commit=$GLUON_COMMIT" >> "$BUILD_META_OUTPUT"
