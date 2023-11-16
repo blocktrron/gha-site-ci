@@ -31,3 +31,15 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shellcheck
       - name: Validate Shell Scripts
         run: shellcheck $SHELL_FILES
+
+  json:
+    name: "JSON"
+    runs-on: ubuntu-latest
+    env:
+      BUILD_INFO: ${{ github.workspace }}/.github/build-info.json
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Validator
+        run: sudo apt-get update && sudo apt-get install -y python3-demjson
+      - name: Run validation
+        run: jsonlint -v "$BUILD_INFO"
