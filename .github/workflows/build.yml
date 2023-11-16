@@ -43,7 +43,7 @@ jobs:
       - name: Get build-metadata
         id: build-metadata
         run: bash .github/build-meta.sh
-      
+
       - name: Create Artifact of build-meta
         uses: actions/upload-artifact@v3
         with:
@@ -386,12 +386,12 @@ jobs:
           keep-packed: 1
 
       - name: Move manifest archive
-        run: |
+        run: >-
           mv gluon-gha-data/artifact-download/manifest-signed/manifest.tar.xz
           gluon-gha-data/release-artifacts/manifest.tar.xz
-      
+
       - name: Move manifest archive
-        run: |
+        run: >-
           mv gluon-gha-data/artifact-download/build-meta/build-meta.txt
           gluon-gha-data/release-artifacts/build-meta.txt
 
