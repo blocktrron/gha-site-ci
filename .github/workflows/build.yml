@@ -401,9 +401,15 @@ jobs:
       - name: Show File sizes
         run: du -sh gluon-gha-data/release-artifacts/*
 
+      - name: Create Release Notes
+        run: >-
+          bash .github/create-release-notes.sh
+          gluon-gha-data/release-artifacts/build-meta.txt
+          gluon-gha-data/release-notes.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: gluon-gha-data/release-artifacts/build-meta.txt
+          body_path: gluon-gha-data/release-notes.md
           files: |
             gluon-gha-data/release-artifacts/*
