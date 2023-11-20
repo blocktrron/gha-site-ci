@@ -161,6 +161,7 @@ jobs:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
           path: 'gluon-gha-data/gluon'
+          fetch-depth: 0
           fetch-tags: true
 
       - name: Print CPU info
