@@ -38,7 +38,7 @@ jobs:
     env:
       BUILD_INFO: ${{ github.workspace }}/.github/build-info.json
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Install Validator
         run: sudo apt-get update && sudo apt-get install -y python3-demjson
       - name: Run validation

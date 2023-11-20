@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Determine build-meta
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get build-metadata
         id: build-metadata
@@ -58,9 +58,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Get Gluon targets
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
@@ -80,8 +80,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Build host-tools
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
@@ -154,9 +154,9 @@ jobs:
         target: ${{ fromJSON(needs.targets.outputs.targets) }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
@@ -214,14 +214,14 @@ jobs:
     needs: [build, build-meta, targets]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v3
         with:
           path: "gluon-gha-data/gluon-output"
 
       - name: Clone Gluon
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: ${{ needs.build-meta.outputs.gluon-repository }}
           ref: ${{ needs.build-meta.outputs.gluon-commit }}
@@ -324,7 +324,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.build-meta.outputs.deploy != '0' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v3
         with:
@@ -369,7 +369,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v3
         with:
