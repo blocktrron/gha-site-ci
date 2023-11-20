@@ -402,5 +402,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
+          body_path: gluon-gha-data/release-artifacts/build-meta.txt
           files: |
             gluon-gha-data/release-artifacts/*
