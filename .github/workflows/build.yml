@@ -287,16 +287,16 @@ jobs:
           priority: 1
 
       - name: Sign manifest (Testing)
-        uses: ./.github/actions/sign
+        uses: freifunk-gluon/action-sign@v1
         if: >
           needs.build-meta.outputs.manifest-testing != '0' &&
           needs.build-meta.outputs.sign-manifest != '0'
         with:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
-          output-dir: gluon-gha-data/gluon/output
+          manifest: gluon-gha-data/gluon/output/images/sysupgrade/testing.manifest
           signing-key: ${{ secrets.GHA_FFDA_BUILD_ECDSA_KEY_TESTING }}
-          manifest-branch: "testing"
+          write-signature: "true"
 
       - name: Create Artifact Directory
         run: mkdir gluon-gha-data/artifact-out
