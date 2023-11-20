@@ -295,7 +295,8 @@ jobs:
         with:
           container-version: ${{ needs.build-meta.outputs.container-version }}
           gluon-path: "gluon-gha-data/gluon"
-          manifest: gluon-gha-data/gluon/output/images/sysupgrade/testing.manifest
+          manifest: >-
+            gluon-gha-data/gluon/output/images/sysupgrade/testing.manifest
           signing-key: ${{ secrets.GHA_FFDA_BUILD_ECDSA_KEY_TESTING }}
           write-signature: "true"
 
