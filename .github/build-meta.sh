@@ -29,8 +29,15 @@ CUSTOM_TESTING_TAG_RE="^[2-9].[0-9]-[0-9]{8}"
 RELEASE_TAG_RE="^[2-9].[0-9].[0-9]$"
 
 # Get Gluon version information
-GLUON_REPOSITORY="$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")"
-GLUON_COMMIT="$(jq -r -e .gluon.commit "$SCRIPT_DIR/build-info.json")"
+if [ -n "$WORKFLOW_DISPATCH_REPOSITORY" -a -n "$WORKFLOW_DISPATCH_REFERENCE" ]; then
+	# Get Gluon version information from dispatch event
+	GLUON_REPOSITORY="$WORKFLOW_DISPATCH_REPOSITORY"
+	GLUON_COMMIT="$WORKFLOW_DISPATCH_REFERENCE"
+else
+	# Get Gluon version information from build-info.json
+	GLUON_REPOSITORY="$(jq -r -e .gluon.repository "$SCRIPT_DIR/build-info.json")"
+	GLUON_COMMIT="$(jq -r -e .gluon.commit "$SCRIPT_DIR/build-info.json")"
+fi
 
 # Get Container version information
 CONTAINER_VERSION="$(jq -r -e .container.version "$SCRIPT_DIR/build-info.json")"
